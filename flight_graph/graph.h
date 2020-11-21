@@ -12,7 +12,7 @@ using std::map;
  */
 class Graph 
 {
-    private:
+    public:
         /**
          * Interior class representing airport.
          * Stores airport name, city, latitude, and longitude.
@@ -20,8 +20,20 @@ class Graph
         struct Vertex
         {
             public:
+                Vertex() {}
+                Vertex(string name_, string code_, string city_, string country_, double lat_, double lng_) 
+                {
+                    name = name_;
+                    code = code_;
+                    city = city_;
+                    country = country_;
+                    lat = lat_;
+                    lng = lng_;
+                }
                 string name;
+                string code;
                 string city;
+                string country;
                 double lat;
                 double lng;
 
@@ -36,17 +48,28 @@ class Graph
         struct Edge
         {
             public:
-                Vertex source;
-                Vertex dest;
+                Edge(){}
+                Edge(string sourceCode_, string destCode_, string airline_, double dist_)
+                {
+                    sourceCode = sourceCode_;
+                    destCode = destCode_;
+                    dist = dist_;
+                    airline = airline_;
+                }
+                string sourceCode;
+                string destCode;
+                string airline;
                 double dist;
 
             private:
 
         };
 
-    public:
-        /** Flight graph ctor using data file */
-        Graph(string fileName);
+        Graph();
+
+        /** Flight graph ctors using data files */
+        Graph(string airportFile, string routeFile);
+        Graph(string dataFile, int choice);
 
         /** Flight graph dtor */
         ~Graph();
@@ -58,17 +81,22 @@ class Graph
         Graph const & operator=(const Graph & rhs);
 
         /** Breadth first traversal of the flight graph */
-        vector<Vertex> bfs();
+        //vector<Vertex> bfs();
 
         /** Method for calculating shortest path between two airports using Dijkstra's algorithm */
-        vector<Vertex> dstra(Vertex start, Vertex end);
+        //vector<Vertex> dstra(Vertex start, Vertex end);
 
         /** Method for calculating shortest landmark path between two airports */
-        vector<Vertex> landmark(Vertex start, Vertex mid, Vertex end);
+        //vector<Vertex> landmark(Vertex start, Vertex mid, Vertex end);
 
+        void printAirportData();
+
+        void printRouteData();
+        
     private:
-        /** Data file processing helper function */
-        void processData(string aiportFile, string flightFile);
+        /** Data file processing helper functions */
+        void processAirportData(string airportFile);
+        void processRouteData(string routeFile);
 
         /** Graph construction, copy and destruction helper functions */
         void buildGraph();
@@ -78,4 +106,6 @@ class Graph
         /** Data Structure to store airport vertices and flight route edges */ 
         map<string, Vertex> airports;
         vector<Edge> routes;
+        string airportFile;
+        string routeFile;
 };
