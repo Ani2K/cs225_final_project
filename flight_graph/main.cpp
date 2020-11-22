@@ -1,5 +1,6 @@
 #include "graph.h"
 #include <iostream>
+#include <iomanip>
 
 /**
  * For general testing of graph.
@@ -43,8 +44,8 @@ int main()
 
     //TEST 4: BOTH DATASETS LONG - PASSED 0.273s, WRITE 2.571s
         /** NOTE: PROCESSING FULL AIRPORT DATASET THROWS INVALID ARG ERROR DUE TO A PARSE DOUBLE CALL, LIKELY INPUT OF \N */
-        /** NOTE: PROBLEMATIC ENTRIES SUCH AS 2 CITY NAMES, EXTRA COMMAS.
-         *        EDITED THESE ENTRIES MANUALLY, ORIGINAL DATA AND PROBLEM ENTRIES SAVED SEPARATELY.
+        /** NOTE: THERE ARE PROBLEMATIC ENTRIES WITH 2 CITY NAMES, EXTRA COMMAS.
+         *        EDITED THESE ENTRIES MANUALLY, SAVED THIS AND PROBLEM ENTRIES AS SEPARATE FILES.
          */
         
         Graph graph = Graph("data/airports_text.txt", "data/routes_text.txt");

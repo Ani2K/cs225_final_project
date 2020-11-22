@@ -81,136 +81,126 @@ void Graph::processAirportData(string airportFile)
 
             stringstream lineRead(airportLine);
             string data;
-            int dataCount = 0;
-            string name_ = ""; int code_ = 0; string city_ = ""; string country_ = ""; double lat_ = 0; double lng_ = 0;
-            string code_iata = ""; string code_icao = "";
+            int code_ = -1; string name_ = "EMPTY"; string city_ = "EMPTY"; string city2_ = "EMPTY"; string country_ = "EMPTY"; 
+            string code_iata_ = "EMPTY"; string code_icao_ = "EMPTY"; long double lat_ = -1; long double lng_ = -1;
+            
+            vector<string> entries;
             while (getline(lineRead, data, ',')) {
-                switch (dataCount)
+                entries.push_back(data);
+            }
+
+            int size = entries.size();
+            bool anomalyEntry = false;
+            for (int i = 0; i < size; i++) {
+                data = entries[i];
+                data.erase(remove(data.begin(), data.end(), '"'), data.end());
+                
+                if (size > 14) {
+                    if (i == 0 || i > 4) {
+                        data.erase(remove(data.begin(), data.end(), ' '), data.end());
+                    } else if (i > 0 && i < 5) {
+                        data.erase(0, data.find_first_not_of(' '));
+                        data.erase(data.find_last_not_of(' ') + 1);
+                    }
+                } else {
+                    if (i == 0 || i > 3) {
+                        data.erase(remove(data.begin(), data.end(), ' '), data.end());
+                    } else if (i > 0 && i < 4) {
+                        data.erase(0, data.find_first_not_of(' '));
+                        data.erase(data.find_last_not_of(' ') + 1);
+                    }
+                }
+
+                switch (i)
                 {
+                    case 0:
+                        code_ = std::stoi(data);
+                        break;
+
                     case 1:
-                        /** Airport Name */
-                        //name_ = data.substr(1, data.length() - 2);
                         name_ = data;
-                        name_.erase(remove(name_.begin(), name_.end(), '"'), name_.end());
-                        //name_.erase(remove(name_.begin(), name_.end(), ' '), name_.end());
-                        name_.erase(0, name_.find_first_not_of(' '));
-                        name_.erase(name_.find_last_not_of(' ') + 1);
                         break;
                     
                     case 2:
-                        /** City */
-                        //city_ = data.substr(1, data.length() - 2);
-                        city_ = data;
-                        city_.erase(remove(city_.begin(), city_.end(), '"'), city_.end());
-                        //city_.erase(remove(city_.begin(), city_.end(), ' '), city_.end());
-                        city_.erase(0, city_.find_first_not_of(' '));
-                        city_.erase(city_.find_last_not_of(' ') + 1);
+                        if (name_ != "Paloich Airport") {
+                            city_ = data;
+                        } else {
+                            anomalyEntry = true;
+                            name_ += ", ";
+                            name_ += data;
+                        }
+                        
                         break;
 
                     case 3:
-                        /** Country */
-                        //country_ = data.substr(1, data.length() - 2);
-                        country_ = data;
-                        country_.erase(remove(country_.begin(), country_.end(), '"'), country_.end());
-                        //country_.erase(remove(country_.begin(), country_.end(), ' '), country_.end());
-                        country_.erase(0, country_.find_first_not_of(' '));
-                        country_.erase(country_.find_last_not_of(' ') + 1);
-                        break;
-
-                    case 0:
-                        /** Open Flights Airport Code */
-                        try
-                        {
-                            code_ = std::stoi(data);
-                        }
-                        catch(const std::invalid_argument& e)
-                        {
-                            //std::cout << "INVALID ARG WITH CODE [" << data << "]" << std::endl;
-                            //std::cerr << e.what() << '\n';
-                        }
-                        break;
-
-                    case 6:
-                        /** Latitude */
-                        try
-                        {
-                            lat_ = std::stod(data);
-                        }
-                        catch(const std::invalid_argument& e)
-                        {
-                            //std::cout << "INVALID ARG WITH LAT [" << data << "]" << std::endl;
-                            //std::cerr << e.what() << '\n';
-                        }
-                        break;
-
-                    case 7:
-                        /** Longitude */
-                        try
-                        {
-                            lng_ = std::stod(data);
-                        }
-                        catch(const std::invalid_argument& e)
-                        {
-                            //std::cout << "INVALID ARG WITH LNG [" << data << "]" << std::endl;
-                            //std::cerr << e.what() << '\n';
+                        if (size > 14) {
+                            if (anomalyEntry) {
+                                city_ = data;
+                            } else {
+                                city2_ = data;
+                            }
+                        } else {
+                            country_ = data;
                         }
                         break;
 
                     case 4:
-                        /** 3 Letter IATA Airport Code */
-                        //code_iata = data.substr(1, data.length() - 2);
-                        code_iata = data;
-                        code_iata.erase(remove(code_iata.begin(), code_iata.end(), '"'), code_iata.end());
-                        code_iata.erase(remove(code_iata.begin(), code_iata.end(), ' '), code_iata.end());
+                        if (size > 14) {
+                            country_ = data;
+                        } else {
+                            code_iata_ = data;
+                        }
                         break;
                     
                     case 5:
-                        /** 4 Letter ICAO Airport Code */
-                        //code_icao = data.substr(1, data.length() - 2);
-                        code_icao = data;
-                        code_icao.erase(remove(code_icao.begin(), code_icao.end(), '"'), code_icao.end());
-                        code_icao.erase(remove(code_icao.begin(), code_icao.end(), ' '), code_icao.end());
+                        if (size > 14) {
+                            code_iata_ = data;
+                        } else {
+                            code_icao_ = data;
+                        }
                         break;
                     
+                    case 6:
+                        if (size > 14) {
+                            code_icao_ = data;
+                        } else {
+                            lat_ = std::stold(data);
+                        }
+                        break;
+
+                    case 7:
+                        if (size > 14) {
+                            lat_ = std::stold(data);
+                        } else {
+                            lng_ = std::stold(data);
+                        }
+                        break;
+
                     case 8:
-                        /** Altitude */
+                        if (size > 14) {
+                            lng_ = std::stold(data);
+                        }
                         break;
-                    
-                    case 9:
-                        /** Timezone (Hours offset from UTC) */
-                        break;
-                    
-                    case 10:
-                        /** Daylight Savings Time */
-                        break;
-                    
-                    case 11:
-                        /** Timezone (tz format) */
-                        break;
-                    
-                    case 12:
-                        /** Port Type */
-                        break;
-                    
-                    case 13:
-                        /** Data Source */
-                        break;
-                    
                 }
-                
-                dataCount++;
+            }
+
+            if (code_iata_.length() == 3) {
+                airportDict[code_iata_] = code_;
+            } else {
+                code_iata_ = "EMPTY";
+            }
+            if (code_icao_.length() == 4) {
+                airportDict[code_icao_] = code_;
+            } else {
+                code_icao_ = "EMPTY";
             }
 
             Vertex currAirport = Vertex();
-            currAirport.name = name_; currAirport.code = code_; currAirport.city = city_; currAirport.country = country_;
+            currAirport.code = code_; currAirport.name = name_; currAirport.city = city_; currAirport.city2 = city2_; 
+            currAirport.country = country_; currAirport.code_iata = code_iata_; currAirport.code_icao = code_icao_;
             currAirport.lat = lat_; currAirport.lng = lng_;
 
             airports[code_] = currAirport;
-            if (code_iata.length() == 3) {
-                airportDict[code_iata] = code_;
-            } else if (code_icao.length() == 4) {
-                airportDict[code_icao] = code_;
-            }
         }
     } else {
         std::cout << "NO AIRPORT DATA" << std::endl;
@@ -228,48 +218,17 @@ void Graph::processRouteData(string routeFile)
             stringstream lineRead(routeLine);
             string data;
             int dataCount = 0;
-            int sourceCode_ = -1; int destCode_ = -1; string airline_ = ""; double dist_ = 0;
-            string sourceCodeStr = ""; string destCodeStr = "";
-            bool sourceCodeFound = false;
-            bool destCodeFound = false;
+            string airline_ = "EMPTY"; string sourceCode_letter_ = "EMPTY"; int sourceCode_ = -1; 
+            string destCode_letter_ = "EMPTY"; int destCode_ = -1; long double dist_ = -2;
+            
             while (getline(lineRead, data, ',')) {
                 switch (dataCount)
                 {
-                    case 3:
-                        /** Open Flights Source Airport Code */
-                        try
-                        {
-                            sourceCodeFound = true;
-                            sourceCode_ = std::stoi(data);
-                        }
-                        catch(const std::invalid_argument& e)
-                        {
-                            sourceCodeFound = false;
-                            //std::cout << "INVALID ARG WITH SOURCE CODE [" << data << "]" << std::endl;
-                            //std::cerr << e.what() << '\n';
-                        }
-                        break;
-                    
-                    case 5:
-                        /** Open Flights Dest Airport Code */
-                        try
-                        {
-                            destCodeFound = true;
-                            destCode_ = std::stoi(data);
-                        }
-                        catch(const std::invalid_argument& e)
-                        {
-                            destCodeFound = false;
-                            //std::cout << "INVALID ARG WITH DEST CODE [" << data << "]" << std::endl;
-                            //std::cerr << e.what() << '\n';
-                        }
-                        break;
-
+                    data.erase(remove(data.begin(), data.end(), '"'), data.end());
+                    data.erase(remove(data.begin(), data.end(), ' '), data.end());
                     case 0:
                         /** 2 Letter IATA or 3 Letter ICAO Airline Code */
                         airline_ = data;
-                        airline_.erase(remove(airline_.begin(), airline_.end(), '"'), airline_.end());
-                        airline_.erase(remove(airline_.begin(), airline_.end(), ' '), airline_.end());
                         break;
 
                     case 1:
@@ -278,16 +237,42 @@ void Graph::processRouteData(string routeFile)
 
                     case 2:
                         /** 3 Letter IATA or 4 Letter ICAO Source Airport Code */
-                        sourceCodeStr = data;
-                        sourceCodeStr.erase(remove(sourceCodeStr.begin(), sourceCodeStr.end(), '"'), sourceCodeStr.end());
-                        sourceCodeStr.erase(remove(sourceCodeStr.begin(), sourceCodeStr.end(), ' '), sourceCodeStr.end());
+                        sourceCode_letter_ = data;
                         break;
 
+                    case 3:
+                        /** Open Flights Source Airport Code */
+                        try
+                        {
+                            sourceCode_ = std::stoi(data);
+                        }
+                        catch(const std::invalid_argument& e)
+                        {
+                            map<string, int>::iterator lookup = airportDict.find(sourceCode_letter_);
+                            if (lookup != airportDict.end()) {
+                                sourceCode_ = lookup->second;
+                            }
+                        }
+                        break;
+                    
                     case 4:
                         /** 3 Letter IATA or 4 Letter ICAO Dest Airport Code */
-                        destCodeStr = data;
-                        destCodeStr.erase(remove(destCodeStr.begin(), destCodeStr.end(), '"'), destCodeStr.end());
-                        destCodeStr.erase(remove(destCodeStr.begin(), destCodeStr.end(), ' '), destCodeStr.end());
+                        destCode_letter_ = data;
+                        break;
+
+                    case 5:
+                        /** Open Flights Dest Airport Code */
+                        try
+                        {
+                            destCode_ = std::stoi(data);
+                        }
+                        catch(const std::invalid_argument& e)
+                        {
+                            map<string, int>::iterator lookup = airportDict.find(destCode_letter_);
+                            if (lookup != airportDict.end()) {
+                                destCode_ = lookup->second;
+                            }
+                        }
                         break;
 
                     case 6:
@@ -306,26 +291,11 @@ void Graph::processRouteData(string routeFile)
                 
                 dataCount++;
             }
-            
-            if (!sourceCodeFound) {
-                map<string, int>::iterator lookup = airportDict.find(sourceCodeStr);
-                if (lookup != airportDict.end()) {
-                    sourceCode_ = lookup->second;
-                    sourceCodeFound = true;
-                }
-            }
-            if (!destCodeFound) {
-                map<string, int>::iterator lookup = airportDict.find(destCodeStr);
-                if (lookup != airportDict.end()) {
-                    destCode_ = lookup->second;
-                    destCodeFound = true;
-                }
-            }
 
             /** NOTE: NEED TO CALC DIST AS A FUNCTION OF SOURCE (LAT, LNG) AND DEST (LAT, LNG) */
             Edge currEdge = Edge();
-            currEdge.sourceCode = sourceCode_; currEdge.destCode = destCode_; currEdge.airline = airline_; 
-            currEdge.dist = dist_;
+            currEdge.airline = airline_; currEdge.sourceCode_letter = sourceCode_letter_; currEdge.sourceCode = sourceCode_; 
+            currEdge.destCode_letter = destCode_letter_; currEdge.destCode = destCode_; currEdge.dist = dist_;
 
             routes.emplace_back(currEdge);
         }
@@ -338,15 +308,17 @@ void Graph::processRouteData(string routeFile)
 void Graph::printAirportData()
 {
     for (std::pair<int, Vertex> curr : airports) {
-        //std::cout << "----------AIRPORT ENTRY: " << curr.first << "----------" << std::endl;
         std::cout << std::endl;
         std::cout << "------------AIRPORT ENTRY------------" << std::endl;
         std::cout << std::endl;
 
+        std::cout << "CODE [" << curr.second.code << "]" << std::endl;
         std::cout << "NAME [" << curr.second.name << "]" << std::endl;
         std::cout << "CITY [" << curr.second.city << "]" << std::endl;
+        std::cout << "CITY2 [" << curr.second.city2 << "]" << std::endl;
         std::cout << "COUNTRY [" << curr.second.country << "]" << std::endl;
-        std::cout << "CODE [" << curr.second.code << "]" << std::endl;
+        std::cout << "IATA CODE [" << curr.second.code_iata << "]" << std::endl;
+        std::cout << "ICAO CODE [" << curr.second.code_icao << "]" << std::endl;
         std::cout << "LAT [" << curr.second.lat << "]" << std::endl;
         std::cout << "LNG [" << curr.second.lng << "]" << std::endl;
 
@@ -359,14 +331,15 @@ void Graph::printAirportData()
 void Graph::printRouteData()
 {
     for (Edge edge : routes) {
-        //std::cout << "----------ROUTE ENTRY: " << edge.sourceCode << "----------" << std::endl;
         std::cout << std::endl;
         std::cout << "-------------ROUTE ENTRY-------------" << std::endl;
         std::cout << std::endl;
 
-        std::cout << "SOURCE [" << edge.sourceCode << "]" << std::endl;
-        std::cout << "DEST [" << edge.destCode << "]" << std::endl;
         std::cout << "AIRLINE [" << edge.airline << "]" << std::endl;
+        std::cout << "SOURCE CODE LETTER [" << edge.sourceCode_letter << "]" << std::endl;
+        std::cout << "SOURCE CODE [" << edge.sourceCode << "]" << std::endl;
+        std::cout << "DEST CODE LETTER [" << edge.destCode_letter << "]" << std::endl;
+        std::cout << "DEST CODE [" << edge.destCode << "]" << std::endl;
         std::cout << "DIST [" << edge.dist << "]" << std::endl;
 
         std::cout << std::endl;
@@ -380,15 +353,17 @@ void Graph::writeAirportData(string outputFile)
     ofstream fileWriter;
     fileWriter.open(outputFile);
     for (std::pair<int, Vertex> curr : airports) {
-        //std::cout << "----------AIRPORT ENTRY: " << curr.first << "----------" << std::endl;
         fileWriter << std::endl;
         fileWriter << "------------AIRPORT ENTRY------------" << std::endl;
         fileWriter << std::endl;
 
+        fileWriter << "CODE [" << curr.second.code << "]" << std::endl;
         fileWriter << "NAME [" << curr.second.name << "]" << std::endl;
         fileWriter << "CITY [" << curr.second.city << "]" << std::endl;
+        fileWriter << "CITY2 [" << curr.second.city2 << "]" << std::endl;
         fileWriter << "COUNTRY [" << curr.second.country << "]" << std::endl;
-        fileWriter << "CODE [" << curr.second.code << "]" << std::endl;
+        fileWriter << "IATA CODE [" << curr.second.code_iata << "]" << std::endl;
+        fileWriter << "ICAO CODE [" << curr.second.code_icao << "]" << std::endl;
         fileWriter << "LAT [" << curr.second.lat << "]" << std::endl;
         fileWriter << "LNG [" << curr.second.lng << "]" << std::endl;
 
@@ -404,14 +379,15 @@ void Graph::writeRouteData(string outputFile)
     ofstream fileWriter;
     fileWriter.open(outputFile);
     for (Edge edge : routes) {
-        //std::cout << "----------ROUTE ENTRY: " << edge.sourceCode << "----------" << std::endl;
         fileWriter << std::endl;
         fileWriter << "-------------ROUTE ENTRY-------------" << std::endl;
         fileWriter << std::endl;
 
-        fileWriter << "SOURCE [" << edge.sourceCode << "]" << std::endl;
-        fileWriter << "DEST [" << edge.destCode << "]" << std::endl;
         fileWriter << "AIRLINE [" << edge.airline << "]" << std::endl;
+        fileWriter << "SOURCE CODE LETTER [" << edge.sourceCode_letter << "]" << std::endl;
+        fileWriter << "SOURCE CODE [" << edge.sourceCode << "]" << std::endl;
+        fileWriter << "DEST CODE LETTER [" << edge.destCode_letter << "]" << std::endl;
+        fileWriter << "DEST CODE [" << edge.destCode << "]" << std::endl;
         fileWriter << "DIST [" << edge.dist << "]" << std::endl;
 
         fileWriter << std::endl;

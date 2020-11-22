@@ -21,21 +21,28 @@ class Graph
         {
             public:
                 Vertex() {}
-                Vertex(string name_, int code_, string city_, string country_, double lat_, double lng_) 
+                Vertex(int code_, string name_, string city_, string city2_, string country_, 
+                string code_iata_, string code_icao_, long double lat_, long double lng_) 
                 {
-                    name = name_;
                     code = code_;
+                    name = name_;
                     city = city_;
+                    city2 = city2_;
                     country = country_;
+                    code_iata = code_iata_;
+                    code_icao = code_icao_;
                     lat = lat_;
                     lng = lng_;
                 }
-                string name;
                 int code;
+                string name;
                 string city;
+                string city2;
                 string country;
-                double lat;
-                double lng;
+                string code_iata;
+                string code_icao;
+                long double lat;
+                long double lng;
 
             private:
 
@@ -49,17 +56,22 @@ class Graph
         {
             public:
                 Edge(){}
-                Edge(int sourceCode_, int destCode_, string airline_, double dist_)
+                Edge(string airline_, string sourceCode_letter_, int sourceCode_, 
+                string destCode_letter_, int destCode_, long double dist_)
                 {
+                    airline = airline_;
+                    sourceCode_letter = sourceCode_letter_;
                     sourceCode = sourceCode_;
+                    destCode_letter = destCode_letter_;
                     destCode = destCode_;
                     dist = dist_;
-                    airline = airline_;
                 }
-                int sourceCode;
-                int destCode;
                 string airline;
-                double dist;
+                string sourceCode_letter;
+                int sourceCode;
+                string destCode_letter;
+                int destCode;
+                long double dist;
 
             private:
 
