@@ -21,7 +21,7 @@ class Graph
         {
             public:
                 Vertex() {}
-                Vertex(string name_, string code_, string city_, string country_, double lat_, double lng_) 
+                Vertex(string name_, int code_, string city_, string country_, double lat_, double lng_) 
                 {
                     name = name_;
                     code = code_;
@@ -31,7 +31,7 @@ class Graph
                     lng = lng_;
                 }
                 string name;
-                string code;
+                int code;
                 string city;
                 string country;
                 double lat;
@@ -49,15 +49,15 @@ class Graph
         {
             public:
                 Edge(){}
-                Edge(string sourceCode_, string destCode_, string airline_, double dist_)
+                Edge(int sourceCode_, int destCode_, string airline_, double dist_)
                 {
                     sourceCode = sourceCode_;
                     destCode = destCode_;
                     dist = dist_;
                     airline = airline_;
                 }
-                string sourceCode;
-                string destCode;
+                int sourceCode;
+                int destCode;
                 string airline;
                 double dist;
 
@@ -92,6 +92,10 @@ class Graph
         void printAirportData();
 
         void printRouteData();
+
+        void writeAirportData(string outputFile);
+
+        void writeRouteData(string outputFile);
         
     private:
         /** Data file processing helper functions */
@@ -104,8 +108,10 @@ class Graph
         void clear();
 
         /** Data Structure to store airport vertices and flight route edges */ 
-        map<string, Vertex> airports;
+        map<int, Vertex> airports;
         vector<Edge> routes;
+
         string airportFile;
         string routeFile;
+        map<string, int> airportDict;
 };

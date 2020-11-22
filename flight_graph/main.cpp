@@ -7,25 +7,25 @@
 int main() 
 {
     //TEST 1: BOTH DATASETS SHORT - PASSED 0.009s, PRINT 0.01s
-        
+        /*
         Graph graph = Graph("data/airports_text_short.txt", "data/routes_text_short.txt");
 
         std::cout << "BEGIN DATA PROCESSING TEST" << std::endl;
 
-        graph.printAirportData();
-        graph.printRouteData();
+        graph.writeAirportData();
+        graph.writeRouteData();
 
         std::cout << "END DATA PROCESSING TEST" << std::endl;
-        
+        */
 
-    //TEST 2: AIRPORT DATASET LONG - FAILED
+    //TEST 2: AIRPORT DATASET LONG - PASSED 0.096s, PRINT 3.125s
         /** NOTE: PROCESSING FULL AIRPORT DATASET THROWS INVALID ARG ERROR DUE TO A PARSE DOUBLE CALL, LIKELY INPUT OF \N */
         /*
         Graph graph = Graph("data/airports_text.txt", 0);
 
         std::cout << "BEGIN DATA PROCESSING TEST" << std::endl;
 
-        graph.printRouteData();
+        graph.writeAirportData();
 
         std::cout << "END DATA PROCESSING TEST" << std::endl;
         */
@@ -36,23 +36,26 @@ int main()
 
         std::cout << "BEGIN DATA PROCESSING TEST" << std::endl;
 
-        graph.printRouteData();
+        graph.writeRouteData();
 
         std::cout << "END DATA PROCESSING TEST" << std::endl;
         */
 
-    //TEST 4: BOTH DATASETS LONG - FAILED
+    //TEST 4: BOTH DATASETS LONG - PASSED 0.273s, WRITE 2.571s
         /** NOTE: PROCESSING FULL AIRPORT DATASET THROWS INVALID ARG ERROR DUE TO A PARSE DOUBLE CALL, LIKELY INPUT OF \N */
-        /*
+        /** NOTE: PROBLEMATIC ENTRIES SUCH AS 2 CITY NAMES, EXTRA COMMAS.
+         *        EDITED THESE ENTRIES MANUALLY, ORIGINAL DATA AND PROBLEM ENTRIES SAVED SEPARATELY.
+         */
+        
         Graph graph = Graph("data/airports_text.txt", "data/routes_text.txt");
 
         std::cout << "BEGIN DATA PROCESSING TEST" << std::endl;
 
-        graph.printAirportData();
-        graph.printRouteData();
+        graph.writeAirportData("output/processed_airport_data.txt");
+        graph.writeRouteData("output/processed_route_data.txt");
 
         std::cout << "END DATA PROCESSING TEST" << std::endl;
-        */
+        
 
 
 
