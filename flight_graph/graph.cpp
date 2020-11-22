@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <cmath>
 #include "graph.h"
 
 using std::vector;
@@ -292,7 +293,30 @@ void Graph::processRouteData(string routeFile)
                 dataCount++;
             }
 
-            /** NOTE: NEED TO CALC DIST AS A FUNCTION OF SOURCE (LAT, LNG) AND DEST (LAT, LNG) */
+            map<int, Vertex>::const_iterator lookup1 = airports.find(sourceCode_);
+            map<int, Vertex>::const_iterator lookup2 = airports.find(destCode_);
+
+            if (lookup1 != airports.end() && lookup2 != airports.end()) {
+                long double lat1 = lookup1->second.lat;
+                long double lng1 = lookup1->second.lng;
+                long double lat2 = lookup2->second.lat;
+                long double lng2 = lookup2->second.lng;
+
+                long double R = 6371 * pow(10.0, 3.0); // meters
+                long double phi1 = lat1 * M_PI / 180; // φ, λ in radians
+                long double phi2 = lat2 * M_PI / 180;
+                long double deltaPhi = (lat2 - lat1) * M_PI / 180;
+                long double deltaLambda = (lng2 - lng1) * M_PI / 180;
+
+                long double a = sin(deltaPhi / 2) * sin(deltaPhi/2) +
+                        cos(phi1) * cos(phi2) *
+                        sin(deltaLambda / 2) * sin(deltaLambda / 2);
+                long double c = 2 * atan2(sqrt(a), sqrt(1-a));
+
+                dist_ = R * c; // in meters
+                dist_ = dist_ / 1000; //in kilometers
+            }
+
             Edge currEdge = Edge();
             currEdge.airline = airline_; currEdge.sourceCode_letter = sourceCode_letter_; currEdge.sourceCode = sourceCode_; 
             currEdge.destCode_letter = destCode_letter_; currEdge.destCode = destCode_; currEdge.dist = dist_;
