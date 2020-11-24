@@ -1,0 +1,33 @@
+ENTRY INDEX        NORMAL AIRPORT ENTRY          ABNORMAL AIRPORT ENTRY          FLIGHT ROUTE ENTRY
+
+0                  AIRPORT OPENFLIGHTS CODE      AIRPORT OPENFLIGHTS CODE        AIRLINE IATA/ICAO CODE
+
+1                  NAME                          NAME                            AIRLINE OPENFLIGHTS CODE
+
+2                  CITY                          CITY                            SOURCE AIRPORT IATA/ICAO CODE
+
+3                  COUNTRY                       SECOND CITY                     SOURCE AIRPORT OPENFLIGHTS CODE
+
+4                  AIRPORT IATA CODE             COUNTRY                         DESTINATION AIRPORT IATA/ICAO CODE
+
+5                  AIRPORT ICAO CODE             AIRPORT IATA CODE               DESTINATION AIRPORT OPENFLIGHTS CODE
+
+6                  LATITUDE                      AIRPORT ICAO CODE               CODESHARE OR NOT
+
+7                  LONGITUDE                     LATITUDE                        NUMBER OF STOPS
+
+8                  ALTITUDE                      LONGITUDE                       EQUIPMENT
+
+9                  TIMEZONE (UTC)                ALTITUDE
+
+10                 DAYLIGHT SAVINGS TIME         TIMEZONE (UTC)
+
+11                 TIMEZONE (TZ)                 DAYLIGHT SAVINGS TIME
+
+12                 PORT TYPE                     TIMEZONE (TZ)
+
+13                 DATA SOURCE                   PORT TYPE
+
+14                                               DATA SOURCE
+
+https://openflights.org/data.html#route

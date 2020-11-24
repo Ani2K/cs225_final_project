@@ -2,10 +2,17 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <list>
+#include <unordered_map>
+#include <iostream>
+#include <ostream>
 
 using std::vector;
 using std::string;
 using std::map;
+using std::list;
+using std::unordered_map;
+using std::ostream;
 
 /** 
  * OpenFlights dataset graph implementation
@@ -14,8 +21,57 @@ class Graph
 {
     public:
         /**
-         * Interior class representing airport.
-         * Stores airport name, city, latitude, and longitude.
+         * Interior struct representing flight route (edge)
+         * Stores airline IATA or ICAO code, source airport IATA or ICAO code and openflights code, 
+         * destination airport IATA or ICAO code and openflights code, distance between the two, and number of stops
+         */
+        struct Edge
+        {
+            public:
+                Edge(){}
+                Edge(string airline_, string sourceCode_letter_, int sourceCode_, 
+                string destCode_letter_, int destCode_, long double dist_, int stops_)
+                {
+                    airline = airline_;
+                    sourceCode_letter = sourceCode_letter_;
+                    sourceCode = sourceCode_;
+                    destCode_letter = destCode_letter_;
+                    destCode = destCode_;
+                    dist = dist_;
+                    stops = stops_;
+                }
+                /** For sorting of vertex adjlist */
+                bool operator<(const Edge & rhs)
+                {
+                    return this->dist <= rhs.dist;
+                }
+                /** For removal from vertex adjlist */
+                bool operator==(const Edge & rhs)
+                {
+                    return this->airline == rhs.airline && this->sourceCode == rhs.sourceCode 
+                    && this->destCode == rhs.destCode && this->dist == rhs.dist && this->stops == rhs.stops;
+                }
+                void printInfo()
+                {
+                    std::cout << "Airline: " << airline << ", from " << sourceCode_letter 
+                    << " to " << destCode_letter << ", distance: " << dist << std::endl; 
+                }
+                string airline = "EMPTY";
+                string sourceCode_letter = "EMPTY";
+                int sourceCode = -1;
+                string destCode_letter = "EMPTY";
+                int destCode = -1;
+                long double dist = -2;
+                int stops = -3;
+
+            private:
+
+        };
+        
+        /**
+         * Interior struct representing airport (vertex).
+         * Stores airport openflights code, name, city, second city (if it has one), 
+         * country, IATA code (if it has one), ICAO code (if it has one), latitude, longitude.
          */
         struct Vertex
         {
@@ -34,53 +90,47 @@ class Graph
                     lat = lat_;
                     lng = lng_;
                 }
-                int code;
-                string name;
-                string city;
-                string city2;
-                string country;
-                string code_iata;
-                string code_icao;
-                long double lat;
-                long double lng;
-
-            private:
-
-        };
-
-        /**
-         * Interior class representing flight route.
-         * Stores source and destination airports as well as distance between.
-         */
-        struct Edge
-        {
-            public:
-                Edge(){}
-                Edge(string airline_, string sourceCode_letter_, int sourceCode_, 
-                string destCode_letter_, int destCode_, long double dist_)
+                void printInfo()
                 {
-                    airline = airline_;
-                    sourceCode_letter = sourceCode_letter_;
-                    sourceCode = sourceCode_;
-                    destCode_letter = destCode_letter_;
-                    destCode = destCode_;
-                    dist = dist_;
+                    if (code_iata != "EMPTY") {
+                        std::cout << code << ", " << code_iata << ", " << name << ", " 
+                        << city << ", " << country << ", " << lat << ", " << lng << std::endl;
+                    } else {
+                        std::cout << code << ", " << code_icao << ", " << name << ", " 
+                        << city << ", " << country << ", " << lat << ", " << lng << std::endl;
+                    }
+                    
                 }
-                string airline;
-                string sourceCode_letter;
-                int sourceCode;
-                string destCode_letter;
-                int destCode;
-                long double dist;
+                int code = -1;
+                string name = "EMPTY";
+                string city = "EMPTY";
+                string city2 = "EMPTY";
+                string country = "EMPTY";
+                string code_iata = "EMPTY";
+                string code_icao = "EMPTY";
+                long double lat = -2;
+                long double lng = -2;
+
+                /** List to store outgoing flight routes (edges). Sorted in ascending distance order. 
+                 * For each unique route, only 1 Edge with lowest number of stops is stored */
+                list<Edge> adjList;
+
+                /**Hashmap to keep track of existing outgoing routes */
+                unordered_map<int, Edge> flightTable;
 
             private:
 
         };
 
+        /** Flight graph default ctor */
         Graph();
 
-        /** Flight graph ctors using data files */
-        Graph(string airportFile, string routeFile);
+        /** Flight graph ctor using airport and route data files */
+        Graph(string airportFile_, string routeFile_);
+
+        /** Flight graph ctor using either airport or route data file
+         * @param choice int to select whether airport or route data file is being used. 0 = airport, 1 = route
+         */
         Graph(string dataFile, int choice);
 
         /** Flight graph dtor */
@@ -93,37 +143,139 @@ class Graph
         Graph const & operator=(const Graph & rhs);
 
         /** Breadth first traversal of the flight graph */
-        //vector<Vertex> bfs();
+        //vector<Vertex> bfs(int startCode);
 
         /** Method for calculating shortest path between two airports using Dijkstra's algorithm */
-        //vector<Vertex> dstra(Vertex start, Vertex end);
+        //vector<Vertex> dstra(int startCode, int endCode);
 
         /** Method for calculating shortest landmark path between two airports */
-        //vector<Vertex> landmark(Vertex start, Vertex mid, Vertex end);
+        //vector<Vertex> landmark(int startCode, int midCode, int endCode);
 
+        /** Adds vertex to graph structure */
+        void addVertex(Vertex vertex);
+
+        /** Fetches vertex object from graph structure
+         * @param code_ airport's openflights code to search for
+         */
+        Vertex getVertex(int code_);
+
+        /** Fetches vertex object from graph structure
+         * @param code_ airport's name or IATA/ICAO code to search for
+         */
+        Vertex getVertex(string code_);
+        
+        /** Adds Edge to graph structure */
+        void addEdge(Edge edge);
+
+        /** Creates and adds Edge from two vertex objects */
+        void addEdge(Vertex source, Vertex dest, string airline_, int stops_);
+
+        /** Creates and adds Edge from source and destination airport openflights codes */
+        void addEdge(int sourceCode_, int destCode_, string airline_, int stops_);
+
+        /** Creates and adds Edge from source and destination airport names or IATA/ICAO codes */
+        void addEdge(string sourceCode_, string destCode_, string airline_, int stops_);
+
+        /** Fetches edge object from graph structure
+         * @param sourceCode_ source airport's openflights code to search for
+         * @param destCode_ destination airport's openflights code to search for
+         */
+        Edge getEdge(int sourceCode_, int destCode_);
+
+        /** Fetches edge object from graph structure
+         * @param sourceCode_ source airport's name or IATA/ICAO code to search for
+         * @param destCode_ destination airport's name or IATA/ICAO code to search for
+         */
+        Edge getEdge(string sourceCode_, string destCode_);
+
+        /** Fetches edge object from graph structure
+         * @param source source airport vertex object
+         * @param dest destination airport vertex object
+         */
+        Edge getEdge(Vertex source, Vertex dest);
+
+        /* Need to think of good way to implement these
+        void removeVertex(Vertex vertex);
+
+        void removeVertex(int code_);
+
+        void removeVertex(string code_);
+
+        void removeEdge(Edge edge);
+
+        void removeEdge(Vertex source, Vertex dest);
+        */
+
+        /** Converts an airport's name or IATA/ICAO code to its openflights code 
+         *  @return valid code if lookup string is valid, otherwise returns -1
+        */
+        int convertToCode(string code_);
+        
+        /** Calculates distance between two lat, lng coordinates
+         * Formula sourced from https://www.movable-type.co.uk/scripts/latlong.html
+         */
+        long double calcDistance(long double lat1, long double lng1, long double lat2, long double lng2);
+
+        /** Updates data filenames and reprocesses data */
+        void updateData(string airportFile_, string routeFile_);
+
+        /** Writes the graph structure's data to an output file
+         * @param omitUnconnected bool to select whether to omit airports with no outgoing flights. true = omit, false = keep
+         */
+        void writeGraph(string outputFile, bool omitUnconnected);
+        
+        /** Prints airport data to console */
         void printAirportData();
 
-        void printRouteData();
+        /** Prints route data to console 
+         *  @param validOnly bool to select whether to omit routes with nonexistant source or dest airports. true = omit, false = keep
+        */
+        void printRouteData(bool validOnly);
 
+        /** Writes airport data to an output file */
         void writeAirportData(string outputFile);
 
-        void writeRouteData(string outputFile);
+        /** Writes route data to an output file 
+         * @param validOnly bool to select whether to omit routes with nonexistant source or dest airports. true = omit, false = keep
+        */
+        void writeRouteData(string outputFile, bool validOnly);
         
     private:
-        /** Data file processing helper functions */
-        void processAirportData(string airportFile);
-        void processRouteData(string routeFile);
+        /** Processes airport data file into graph structure and airport code dictionary
+         *  String trimming code sourced from http://www.martinbroadhurst.com/how-to-trim-a-stdstring.html
+         *                                    https://www.tutorialspoint.com/how-to-remove-certain-characters-from-a-string-in-cplusplus
+         */
+        void processAirportData();
+
+        /** Processes route data file into graph structure and route list 
+         *  String trimming code sourced from http://www.martinbroadhurst.com/how-to-trim-a-stdstring.html
+         *                                    https://www.tutorialspoint.com/how-to-remove-certain-characters-from-a-string-in-cplusplus
+        */
+        void processRouteData();
 
         /** Graph construction, copy and destruction helper functions */
         void buildGraph();
         void copy(const Graph & other);
         void clear();
 
-        /** Data Structure to store airport vertices and flight route edges */ 
-        map<int, Vertex> airports;
-        vector<Edge> routes;
+        /** Hashmap to store airport vertices, mapped by openflights codes. Each airport maintains list of outgoing flights */ 
+        unordered_map<int, Vertex> graph;
 
+        /** Hashmap to store airport openflights codes, mapped by their IATA code, ICAO code, and airport name */
+        unordered_map<string, int> airportCodeDict;
+
+        /** List of all routes from route data file */
+        vector<Edge> allRoutes;
+
+        /** List of valid (source and dest airport exist) routes from route data file */
+        vector<Edge> validRoutes;
+
+        /** List of invalid (nonexistant source or dest airport) routes from route data file */
+        vector<Edge> invalidRoutes;
+
+        /** string to store airport data filename */
         string airportFile;
+
+        /** string to store route data filename */
         string routeFile;
-        map<string, int> airportDict;
 };
