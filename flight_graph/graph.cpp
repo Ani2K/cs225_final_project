@@ -7,6 +7,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cmath>
+#include <queue>
 #include "graph.h"
 
 using std::vector;
@@ -16,6 +17,7 @@ using std::ifstream;
 using std::ofstream;
 using std::stringstream;
 using std::unordered_map;
+using std::queue;
 
 Graph::Graph()
 {
@@ -58,12 +60,70 @@ const Graph & Graph::operator=(const Graph & rhs)
     return *this;
 }
 
-/*
-vector<Vertex> Graph::bfs()
-{
 
+vector<Graph::Vertex> Graph::bfs(Vertex start)
+{
+    vector<Vertex> traversal;
+    queue<Vertex> neighbors;
+    unordered_map<int, bool> visited; //might want to replace with set of some sort?
+    
+    neighbors.push(start);
+    while (!neighbors.empty()) {
+        Vertex curr = neighbors.front();
+        neighbors.pop();
+
+        if (visited.find(curr.code) != visited.end()) {
+            while (!neighbors.empty() && visited.find(curr.code) != visited.end()) {
+                curr = neighbors.front();
+                neighbors.pop();
+            }
+        } else {
+            for (Edge edge : curr.adjList) {
+                neighbors.push(graph[edge.destCode]);
+            }
+            visited[curr.code] = true;
+            traversal.push_back(curr);
+        }
+    }
+    return traversal;
 }
 
+void Graph::printbfs(vector<Graph::Vertex> traversal)
+{
+    for (Vertex vertex : traversal) {
+        vertex.printInfo();
+    }
+    /* FIND WAY TO PRINT CONNECTIONS IN ORDER? THIS DOES NOT WORK
+    int size = traversal.size();
+    for (int i = 0; i < size; i++) {
+        traversal[i].writeInfo(fileWriter);
+        if (i < size - 1) {
+            getEdge(traversal[i], traversal[i + 1]).writeInfo(fileWriter);
+        }
+    }
+    */
+}
+
+void Graph::writebfs(vector<Graph::Vertex> traversal, string outputFile)
+{
+    ofstream fileWriter;
+    fileWriter.open(outputFile);
+    for (Vertex vertex : traversal) {
+        vertex.writeInfo(fileWriter);
+    }
+    /* FIND WAY TO PRINT CONNECTIONS IN ORDER? THIS DOES NOT WORK
+    int size = traversal.size();
+    for (int i = 0; i < size; i++) {
+        traversal[i].writeInfo(fileWriter);
+        if (i < size - 1) {
+            getEdge(traversal[i], traversal[i + 1]).writeInfo(fileWriter);
+        }
+    }
+    */
+    fileWriter.close();
+}
+
+/*
 vector<Vertex> Graph::dstra(Vertex start, Vertex end)
 {
 
@@ -410,6 +470,60 @@ Graph::Edge Graph::getEdge(string sourceCode_, string destCode_)
 Graph::Edge Graph::getEdge(Vertex source, Vertex dest)
 {
     return getEdge(source.code, dest.code);
+}
+
+void Graph::removeEdge(Edge edge)
+{
+    int sourceCode_ = edge.sourceCode;
+    int destCode_ = edge.destCode;
+    unordered_map<int, Vertex>::iterator lookupSource = graph.find(sourceCode_);
+    if (lookupSource == graph.end()) {
+        return;
+    }
+    if (lookupSource->second.flightTable.find(destCode_) != lookupSource->second.flightTable.end()) {
+        lookupSource->second.adjList.remove(lookupSource->second.flightTable.find(destCode_)->second);
+        lookupSource->second.flightTable.erase(lookupSource->second.flightTable.find(destCode_));
+    }
+}
+
+void Graph::removeEdge(Vertex source, Vertex dest, string airline_, int stops_)
+{
+    Edge currEdge = Edge();
+
+    string sourceCode_letter_; 
+    if (source.code_iata != "EMPTY") {
+        sourceCode_letter_ = source.code_iata;
+    } else {
+        sourceCode_letter_ = source.code_icao;
+    }
+    int sourceCode_ = source.code;
+    string destCode_letter_;
+    if (dest.code_iata != "EMPTY") {
+        destCode_letter_ = dest.code_iata;
+    } else {
+        destCode_letter_ = dest.code_icao;
+    }
+    int destCode_ = dest.code;
+    long double dist_ = calcDistance(source.lat, source.lng, dest.lat, dest.lng);
+
+    currEdge.airline = airline_; currEdge.sourceCode_letter = sourceCode_letter_; currEdge.sourceCode = sourceCode_; 
+    currEdge.destCode_letter = destCode_letter_; currEdge.destCode = destCode_; currEdge.dist = dist_; currEdge.stops = stops_;
+
+    removeEdge(currEdge);
+}
+
+void Graph::removeEdge(int sourceCode_, int destCode_, string airline_, int stops_)
+{
+    unordered_map<int, Vertex>::iterator lookupSource = graph.find(sourceCode_);
+    unordered_map<int, Vertex>::iterator lookupDest = graph.find(destCode_);
+    if (lookupSource != graph.end() && lookupDest != graph.end()) {
+        removeEdge(lookupSource->second, lookupDest->second, airline_, stops_);
+    }
+}
+
+void Graph::removeEdge(string sourceCode_, string destCode_, string airline_, int stops_)
+{
+    removeEdge(convertToCode(sourceCode_), convertToCode(destCode_), airline_, stops_);
 }
 
 int Graph::convertToCode(string code_)

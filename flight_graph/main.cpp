@@ -76,8 +76,8 @@ int main()
         std::cout << "END GRAPH STRUCTURE TEST" << std::endl;
         */
 
-    //TEST 6: GRAPH STRUCTURE - INFO RETRIEVAL AND MANUAL ADDITIONS - 
-        
+    //TEST 6: GRAPH STRUCTURE - INFO RETRIEVAL AND MANUAL ADDITIONS - PASSED
+        /*
         std::cout << "BEGIN GRAPH STRUCTURE TEST" << std::endl;
         std::cout << std::endl;
 
@@ -116,11 +116,15 @@ int main()
         graph.addEdge("SFO", "CND4", "FAKEST PLANE", 0);
         e3 = graph.getEdge("SFO", "CND4");
         e3.printInfo();
+        graph.removeEdge("SFO", "CND4", "FAKEST PLANE", 0);
+        e3 = graph.getEdge("SFO", "CND4");
+        e3.printInfo();
 
         std::cout << std::endl;
         std::cout << "END GRAPH STRUCTURE TEST" << std::endl;
+        */
 
-    //TEST 7: MANUAL DATA ENTRY -> GRAPH STRUCTURE
+    //TEST 7: MANUAL DATA ENTRY -> GRAPH STRUCTURE - PASSED
         /*
         std::cout << "BEGIN MANUAL ENTRY GRAPH TEST" << std::endl;
 
@@ -151,7 +155,25 @@ int main()
 
         std::cout << "BEGIN MANUAL ENTRY GRAPH TEST" << std::endl;
         */
+    
+    //TEST 8: BFS TEST
+        std::cout << "BEGIN BFS TEST" << std::endl;
+        std::cout << std::endl;
 
+        Graph graph = Graph("data/airports.dat", "data/routes.dat");
+
+        bool omitUnconnected = false;
+        graph.writeGraph("output/graph_data.dat", omitUnconnected);
+
+        Graph::Vertex start = graph.getVertex("Kasese Airport");
+        //Graph::Vertex start = graph.getVertex("Yarram Airport");
+        vector<Graph::Vertex> traversal = graph.bfs(start);
+
+        graph.writebfs(traversal, "output/bfs_test.dat");
+
+        std::cout << std::endl;
+        std::cout << "END BFS TEST" << std::endl;
+        
 
     return 0;
 }
