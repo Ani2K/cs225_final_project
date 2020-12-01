@@ -156,7 +156,8 @@ int main()
         std::cout << "BEGIN MANUAL ENTRY GRAPH TEST" << std::endl;
         */
     
-    //TEST 8: BFS TEST
+    //TEST 8: BFS TEST - PASSED INITIAL TESTING
+        /*
         std::cout << "BEGIN BFS TEST" << std::endl;
         std::cout << std::endl;
 
@@ -169,10 +170,35 @@ int main()
         //Graph::Vertex start = graph.getVertex("Yarram Airport");
         vector<Graph::Vertex> traversal = graph.bfs(start);
 
-        graph.writebfs(traversal, "output/bfs_test.dat");
+        graph.write_bfs(traversal, "output/bfs_test.dat");
 
         std::cout << std::endl;
         std::cout << "END BFS TEST" << std::endl;
+        */
+
+    //TEST 9: DTSRA TEST - PASSED INITIAL TESTING
+        
+        std::cout << "BEGIN DSTRA TEST" << std::endl;
+        std::cout << std::endl;
+
+        Graph graph = Graph("data/airports.dat", "data/routes.dat");
+
+        //bool omitUnconnected = false;
+        //graph.writeGraph("output/graph_data.dat", omitUnconnected);
+        
+        //graph.testMinHeap();
+
+        //Graph::Vertex start = graph.getVertex(890);
+        //Graph::Vertex end = graph.getVertex(891);
+        Graph::Vertex start = graph.getVertex("SFO");
+        Graph::Vertex end = graph.getVertex("Kinmen Airport");
+        vector<Graph::Vertex> path = graph.dstra(start, end);
+        //std::cout << "PATH FINDING DONE" << std::endl;
+
+        graph.write_dstra(path, "output/dstra_test.dat");
+
+        std::cout << std::endl;
+        std::cout << "END DSTRA TEST" << std::endl;
         
 
     return 0;

@@ -18,6 +18,8 @@ using std::ofstream;
 using std::stringstream;
 using std::unordered_map;
 using std::queue;
+using std::priority_queue;
+using std::pair;
 
 Graph::Graph()
 {
@@ -60,7 +62,6 @@ const Graph & Graph::operator=(const Graph & rhs)
     return *this;
 }
 
-
 vector<Graph::Vertex> Graph::bfs(Vertex start)
 {
     vector<Vertex> traversal;
@@ -88,52 +89,199 @@ vector<Graph::Vertex> Graph::bfs(Vertex start)
     return traversal;
 }
 
-void Graph::printbfs(vector<Graph::Vertex> traversal)
+void Graph::print_bfs(vector<Graph::Vertex> traversal)
 {
+    std::cout << "---BFS TRAVERSAL OF GRAPH STARTING FROM [";
+    traversal[0].printName();
+    std::cout << "]---" << std::endl;
+    std::cout << std::endl;
+
     for (Vertex vertex : traversal) {
         vertex.printInfo();
     }
-    /* FIND WAY TO PRINT CONNECTIONS IN ORDER? THIS DOES NOT WORK
-    int size = traversal.size();
-    for (int i = 0; i < size; i++) {
-        traversal[i].writeInfo(fileWriter);
-        if (i < size - 1) {
-            getEdge(traversal[i], traversal[i + 1]).writeInfo(fileWriter);
-        }
-    }
-    */
+
+    std::cout << std::endl;
+    std::cout << "---END OF TRAVERSAL---";
 }
 
-void Graph::writebfs(vector<Graph::Vertex> traversal, string outputFile)
+void Graph::write_bfs(vector<Graph::Vertex> traversal, string outputFile)
 {
     ofstream fileWriter;
     fileWriter.open(outputFile);
+    fileWriter << "---BFS TRAVERSAL OF GRAPH STARTING FROM [";
+    traversal[0].writeName(fileWriter);
+    fileWriter << "]---" << std::endl;
+    fileWriter << std::endl;
+
     for (Vertex vertex : traversal) {
         vertex.writeInfo(fileWriter);
     }
-    /* FIND WAY TO PRINT CONNECTIONS IN ORDER? THIS DOES NOT WORK
-    int size = traversal.size();
-    for (int i = 0; i < size; i++) {
-        traversal[i].writeInfo(fileWriter);
-        if (i < size - 1) {
-            getEdge(traversal[i], traversal[i + 1]).writeInfo(fileWriter);
-        }
+
+    fileWriter << std::endl;
+    fileWriter << "---END OF TRAVERSAL---";
+    fileWriter.close();
+}
+
+
+vector<Graph::Vertex> Graph::dstra(Vertex start, Vertex end)
+{
+    vector<Vertex> path;
+    int startCode = start.code;
+    int endCode = end.code;
+
+    if (graph.find(startCode) == graph.end() || graph.find(endCode) == graph.end()) {
+        return path;
     }
-    */
+    
+    for (pair<int, Vertex> p : graph) {
+        p.second.tentDist = -3;
+    }
+    
+    graph[startCode].tentDist = 0;
+    unordered_map<int, int> prev;  // initialize a map that maps current node -> its previous node
+    priority_queue<Vertex, vector<Vertex>, std::greater<Vertex>> priority;   // initialize the priority queue, minheap
+    unordered_map<int, bool> visited; //might want to replace with set of some sort?
+
+    /** Writes traversal for debugging */
+    //ofstream fileWriter;
+    //fileWriter.open("output/dstra_debug.dat");
+
+    priority.push(graph[startCode]);
+    while (!priority.empty()) {
+        if (priority.top().code == endCode) {
+            break;
+        }
+        Vertex curr = priority.top();
+        priority.pop();
+        //fileWriter << "CURR " << curr.name << ", " << curr.tentDist << std::endl;
+        for (Edge edge: curr.adjList) {
+            if (visited.find(edge.destCode) == visited.end()) {
+                if (graph[edge.destCode].tentDist != -3) {
+                    if (graph[edge.destCode].tentDist < (edge.dist + curr.tentDist)) {
+                        //fileWriter << "NEIGHBOR NO UPDATE " << graph[edge.destCode].name << ", " << graph[edge.destCode].tentDist << std::endl;
+                    } else {
+                        graph[edge.destCode].tentDist = edge.dist + curr.tentDist;
+                        priority.push(graph[edge.destCode]);
+                        prev[edge.destCode] = curr.code;
+                        //fileWriter << "NEIGHBOR UPDATE " << graph[edge.destCode].name << ", " << graph[edge.destCode].tentDist << std::endl;
+                    }
+                } else {
+                    graph[edge.destCode].tentDist = edge.dist + curr.tentDist;
+                    priority.push(graph[edge.destCode]);
+                    prev[edge.destCode] = curr.code;
+                    //fileWriter << "NEIGHBOR UPDATE " << graph[edge.destCode].name << ", " << graph[edge.destCode].tentDist << std::endl;
+                }
+            }
+        }
+        visited[curr.code] =  true;
+    }
+    //fileWriter.close();
+
+    if (!priority.empty()) {
+        Vertex curr = priority.top();
+        while (true) {
+            path.push_back(curr);
+            if (curr.code != startCode) {
+                curr = graph[prev.find(curr.code)->second];
+            } else {
+                break;
+            }
+        }
+        std::reverse(path.begin(), path.end());
+        return path;
+    } else {
+        std::cout << "NO PATH" << std::endl;
+        return path;
+    }
+}
+
+void Graph::print_dstra(vector<Vertex> path)
+{
+    if (path.size() < 2){
+        std::cout << "NOT A VIABLE PATH" << std::endl;
+        return;
+    }
+    
+    std::cout << "SHORTEST PATH BETWEEN ["; 
+    path[0].printName();
+    std::cout << "] AND [";
+    path[path.size() - 1].printName();
+    std::cout << "]" << std::endl;
+    std::cout << std::endl;
+    for (Vertex v : path) {
+        v.printInfo();
+    }
+    std::cout << std::endl;
+    //std::cout << "TOTAL DISTANCE: " << path[path.size() - 1].tentDist << "km" << std::endl;
+    std::cout << "TOTAL DISTANCE: " << calcPathDistance(path) << "km" << std::endl;
+}
+
+void Graph::write_dstra(vector<Vertex> path, string outputFile)
+{
+    ofstream fileWriter;
+    fileWriter.open(outputFile);
+
+    if (path.size() < 2){
+        fileWriter << "NOT A VIABLE PATH" << std::endl;
+        return;
+    }
+
+    fileWriter << "SHORTEST PATH BETWEEN ["; 
+    path[0].writeName(fileWriter);
+    fileWriter << "] AND [";
+    path[path.size() - 1].writeName(fileWriter);
+    fileWriter << "]" << std::endl;
+    fileWriter << std::endl;
+    for (Vertex v : path) {
+        v.writeInfo(fileWriter);
+    }
+    fileWriter << std::endl;
+    fileWriter << "TOTAL DISTANCE: " << calcPathDistance(path) << "km" << std::endl;
     fileWriter.close();
 }
 
 /*
-vector<Vertex> Graph::dstra(Vertex start, Vertex end)
+void Graph::testMinHeap()
 {
+    Vertex v1 = Vertex();
+    v1.name = "AIR1";
+    v1.tentDist = 10;
+    Vertex v2 = Vertex();
+    v2.name = "AIR2";
+    v2.tentDist = 1;
+    Vertex v3 = Vertex();
+    v3.name = "AIR3";
+    //v3.tentDist = 30;
+    Vertex v4 = Vertex();
+    v4.name = "AIR4";
+    //v4.tentDist = 40;
 
-}
-
-vector<Vertex> Graph::landmark(Vertex start, Vertex mid, Vertex end)
-{
-
+    priority_queue<Vertex, vector<Vertex>, std::greater<Vertex>> pq;
+    //priority_queue<Vertex> pq;
+    pq.push(v1);
+    pq.push(v2);
+    pq.push(v3);
+    pq.push(v4);
+ 
+    // One by one extract items from min heap
+    while (pq.empty() == false)
+    {
+        std::cout << "[" << pq.top().name << ", " << pq.top().tentDist << "] ";
+        pq.pop();
+    }
+    std::cout << std::endl;
 }
 */
+
+vector<Graph::Vertex> Graph::landmark(Vertex start, Vertex mid, Vertex end)
+{
+    /** to supress warnings */
+    start.code = start.code;
+    mid.code = mid.code;
+    end.code = end.code;
+    vector<Vertex> path;
+    return path;
+}
 
 void Graph::processAirportData()
 {
@@ -550,6 +698,16 @@ long double Graph::calcDistance(long double lat1, long double lng1, long double 
 
     long double dist = R * c; // in meters
     dist /= 1000; //in kilometers
+    return dist;
+}
+
+long double Graph::calcPathDistance(vector<Vertex> path)
+{
+    int size = path.size();
+    long double dist = 0;
+    for (int i = 0; i < size - 1; i++) {
+        dist += getEdge(path[i], path[i + 1]).dist;
+    }
     return dist;
 }
 

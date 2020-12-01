@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ostream>
 #include <fstream>
+#include <limits>
 
 using std::vector;
 using std::string;
@@ -15,6 +16,7 @@ using std::list;
 using std::unordered_map;
 using std::ostream;
 using std::ofstream;
+using std::numeric_limits;
 
 /** 
  * OpenFlights dataset graph implementation
@@ -97,6 +99,30 @@ class Graph
                     lat = lat_;
                     lng = lng_;
                 }
+                /** For max priority queue */
+                /*
+                bool operator<(const Vertex & rhs) const
+                {
+                    if (this->tentDist == -3) {
+                        return false;
+                    }
+                    if (rhs.tentDist == -3) {
+                        return true;
+                    }
+                    return this->tentDist <= rhs.tentDist;
+                }
+                */
+                /** For min priority queue */
+                bool operator>(const Vertex & rhs) const
+                {
+                    if (this->tentDist == -3) {
+                        return true;
+                    }
+                    if (rhs.tentDist == -3) {
+                        return false;
+                    }
+                    return this->tentDist > rhs.tentDist;
+                }
                 void printInfo()
                 {
                     if (code_iata != "EMPTY") {
@@ -106,7 +132,6 @@ class Graph
                         std::cout << code << ", " << code_icao << ", " << name << ", " 
                         << city << ", " << country << ", " << lat << ", " << lng << std::endl;
                     }
-                    
                 }
                 void writeInfo(ofstream & fileWriter)
                 {
@@ -118,6 +143,22 @@ class Graph
                         << city << ", " << country << ", " << lat << ", " << lng << std::endl;
                     }
                 }
+                void printName()
+                {
+                    if (code_iata != "EMPTY") {
+                        std::cout << code_iata << ", " << name;
+                    } else {
+                        std::cout << code_icao << ", " << name;
+                    }
+                }
+                void writeName(ofstream & fileWriter)
+                {
+                    if (code_iata != "EMPTY") {
+                        fileWriter << code_iata << ", " << name;
+                    } else {
+                        fileWriter << code_icao << ", " << name;
+                    }
+                }
                 int code = -1;
                 string name = "EMPTY";
                 string city = "EMPTY";
@@ -127,6 +168,7 @@ class Graph
                 string code_icao = "EMPTY";
                 long double lat = -2;
                 long double lng = -2;
+                long double tentDist = -3;
 
                 /** List to store outgoing flight routes (edges). Sorted in ascending distance order. 
                  * For each unique route, only 1 Edge with lowest number of stops is stored */
@@ -162,15 +204,22 @@ class Graph
         /** Breadth first traversal of the flight graph */
         vector<Vertex> bfs(Vertex start);
 
-        void printbfs(vector<Vertex> traversal);
+        void print_bfs(vector<Vertex> traversal);
 
-        void writebfs(vector<Vertex> traversal, string outputFile);
+        void write_bfs(vector<Vertex> traversal, string outputFile);
 
         /** Method for calculating shortest path between two airports using Dijkstra's algorithm */
-        //vector<Vertex> dstra(int startCode, int endCode);
+        vector<Vertex> dstra(Vertex start, Vertex end);
+
+        void print_dstra(vector<Vertex> path);
+
+        void write_dstra(vector<Vertex> path, string outputFile);
+
+        /** Test Vertex minheap */
+        //void testMinHeap();
 
         /** Method for calculating shortest landmark path between two airports */
-        //vector<Vertex> landmark(int startCode, int midCode, int endCode);
+        vector<Vertex> landmark(Vertex start, Vertex mid, Vertex end);
 
         /** Adds vertex to graph structure */
         void addVertex(Vertex vertex);
@@ -243,6 +292,8 @@ class Graph
          * Formula sourced from https://www.movable-type.co.uk/scripts/latlong.html
          */
         long double calcDistance(long double lat1, long double lng1, long double lat2, long double lng2);
+
+        long double calcPathDistance(vector<Vertex> path);
 
         /** Updates data filenames and reprocesses data */
         void updateData(string airportFile_, string routeFile_);
