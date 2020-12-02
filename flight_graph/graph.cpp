@@ -73,14 +73,15 @@ vector<Graph::Vertex> Graph::bfs(Vertex start)
         Vertex curr = neighbors.front();
         neighbors.pop();
 
-        if (visited.find(curr.code) != visited.end()) {
-            while (!neighbors.empty() && visited.find(curr.code) != visited.end()) {
-                curr = neighbors.front();
-                neighbors.pop();
-            }
-        } else {
+        while (visited.find(curr.code) != visited.end() && !neighbors.empty()) {
+            curr = neighbors.front();
+            neighbors.pop();
+        }
+        if (visited.find(curr.code) == visited.end()) {
             for (Edge edge : curr.adjList) {
-                neighbors.push(graph[edge.destCode]);
+                if (visited.find(edge.destCode) == visited.end()) {
+                    neighbors.push(graph[edge.destCode]);
+                }
             }
             visited[curr.code] = true;
             traversal.push_back(curr);
