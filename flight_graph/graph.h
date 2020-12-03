@@ -6,8 +6,8 @@
 #include <unordered_map>
 #include <iostream>
 #include <ostream>
-#include <queue>
-#include <algorithm>
+#include <fstream>
+#include <limits>
 
 using std::vector;
 using std::string;
@@ -15,8 +15,8 @@ using std::map;
 using std::list;
 using std::unordered_map;
 using std::ostream;
-using std::priority_queue;
-using std::find;
+using std::ofstream;
+using std::numeric_limits;
 
 /** 
  * OpenFlights dataset graph implementation
@@ -60,6 +60,11 @@ class Graph
                     std::cout << "Airline: " << airline << ", from " << sourceCode_letter 
                     << " to " << destCode_letter << ", distance: " << dist << std::endl; 
                 }
+                void writeInfo(ofstream & fileWriter)
+                {
+                    fileWriter << "Airline: " << airline << ", from " << sourceCode_letter 
+                    << " to " << destCode_letter << ", distance: " << dist << std::endl; 
+                }
                 string airline = "EMPTY";
                 string sourceCode_letter = "EMPTY";
                 int sourceCode = -1;
@@ -94,6 +99,30 @@ class Graph
                     lat = lat_;
                     lng = lng_;
                 }
+                /** For max priority queue */
+                /*
+                bool operator<(const Vertex & rhs) const
+                {
+                    if (this->tentDist == -3) {
+                        return false;
+                    }
+                    if (rhs.tentDist == -3) {
+                        return true;
+                    }
+                    return this->tentDist <= rhs.tentDist;
+                }
+                */
+                /** For min priority queue */
+                bool operator>(const Vertex & rhs) const
+                {
+                    if (this->tentDist == -3) {
+                        return true;
+                    }
+                    if (rhs.tentDist == -3) {
+                        return false;
+                    }
+                    return this->tentDist > rhs.tentDist;
+                }
                 void printInfo()
                 {
                     if (code_iata != "EMPTY") {
@@ -103,7 +132,32 @@ class Graph
                         std::cout << code << ", " << code_icao << ", " << name << ", " 
                         << city << ", " << country << ", " << lat << ", " << lng << std::endl;
                     }
-                    
+                }
+                void writeInfo(ofstream & fileWriter)
+                {
+                    if (code_iata != "EMPTY") {
+                        fileWriter << code << ", " << code_iata << ", " << name << ", " 
+                        << city << ", " << country << ", " << lat << ", " << lng << std::endl;
+                    } else {
+                        fileWriter << code << ", " << code_icao << ", " << name << ", " 
+                        << city << ", " << country << ", " << lat << ", " << lng << std::endl;
+                    }
+                }
+                void printName()
+                {
+                    if (code_iata != "EMPTY") {
+                        std::cout << code_iata << ", " << name;
+                    } else {
+                        std::cout << code_icao << ", " << name;
+                    }
+                }
+                void writeName(ofstream & fileWriter)
+                {
+                    if (code_iata != "EMPTY") {
+                        fileWriter << code_iata << ", " << name;
+                    } else {
+                        fileWriter << code_icao << ", " << name;
+                    }
                 }
                 int code = -1;
                 string name = "EMPTY";
@@ -114,6 +168,7 @@ class Graph
                 string code_icao = "EMPTY";
                 long double lat = -2;
                 long double lng = -2;
+                long double tentDist = -3;
 
                 /** List to store outgoing flight routes (edges). Sorted in ascending distance order. 
                  * For each unique route, only 1 Edge with lowest number of stops is stored */
@@ -147,13 +202,24 @@ class Graph
         Graph const & operator=(const Graph & rhs);
 
         /** Breadth first traversal of the flight graph */
-        //vector<Vertex> bfs(int startCode);
+        vector<Vertex> bfs(Vertex start);
+
+        void print_bfs(vector<Vertex> traversal);
+
+        void write_bfs(vector<Vertex> traversal, string outputFile);
 
         /** Method for calculating shortest path between two airports using Dijkstra's algorithm */
-        vector<Vertex> dstra(int startCode, int endCode);
+        vector<Vertex> dstra(Vertex start, Vertex end);
+
+        void print_dstra(vector<Vertex> path);
+
+        void write_dstra(vector<Vertex> path, string outputFile);
+
+        /** Test Vertex minheap */
+        //void testMinHeap();
 
         /** Method for calculating shortest landmark path between two airports */
-        //vector<Vertex> landmark(int startCode, int midCode, int endCode);
+        vector<Vertex> landmark(Vertex start, Vertex mid, Vertex end);
 
         /** Adds vertex to graph structure */
         void addVertex(Vertex vertex);
@@ -198,17 +264,24 @@ class Graph
          */
         Edge getEdge(Vertex source, Vertex dest);
 
-        /* Need to think of good way to implement these
-        void removeVertex(Vertex vertex);
+        // Need to think of good way to implement these
+        //void removeVertex(Vertex vertex);
 
-        void removeVertex(int code_);
+        //void removeVertex(int code_);
 
-        void removeVertex(string code_);
+        //void removeVertex(string code_);
 
+        /** Removes Edge from graph structure */
         void removeEdge(Edge edge);
 
-        void removeEdge(Vertex source, Vertex dest);
-        */
+        /** Removes Edge based on source and dest Vertices */
+        void removeEdge(Vertex source, Vertex dest, string airline_, int stops_);
+        
+        /** Removes Edge based on source and dest airport openflights codes */
+        void removeEdge(int sourceCode_, int destCode_, string airline_, int stops_);
+
+        /** Removes Edge based on source and dest airport names or IATA/ICAO codes */
+        void removeEdge(string sourceCode_, string destCode_, string airline_, int stops_);
 
         /** Converts an airport's name or IATA/ICAO code to its openflights code 
          *  @return valid code if lookup string is valid, otherwise returns -1
@@ -219,6 +292,8 @@ class Graph
          * Formula sourced from https://www.movable-type.co.uk/scripts/latlong.html
          */
         long double calcDistance(long double lat1, long double lng1, long double lat2, long double lng2);
+
+        long double calcPathDistance(vector<Vertex> path);
 
         /** Updates data filenames and reprocesses data */
         void updateData(string airportFile_, string routeFile_);

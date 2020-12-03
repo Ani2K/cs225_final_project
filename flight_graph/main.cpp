@@ -76,8 +76,8 @@ int main()
         std::cout << "END GRAPH STRUCTURE TEST" << std::endl;
         */
 
-    //TEST 6: GRAPH STRUCTURE - INFO RETRIEVAL AND MANUAL ADDITIONS - 
-        
+    //TEST 6: GRAPH STRUCTURE - INFO RETRIEVAL AND MANUAL ADDITIONS - PASSED
+        /*
         std::cout << "BEGIN GRAPH STRUCTURE TEST" << std::endl;
         std::cout << std::endl;
 
@@ -116,11 +116,15 @@ int main()
         graph.addEdge("SFO", "CND4", "FAKEST PLANE", 0);
         e3 = graph.getEdge("SFO", "CND4");
         e3.printInfo();
+        graph.removeEdge("SFO", "CND4", "FAKEST PLANE", 0);
+        e3 = graph.getEdge("SFO", "CND4");
+        e3.printInfo();
 
         std::cout << std::endl;
         std::cout << "END GRAPH STRUCTURE TEST" << std::endl;
+        */
 
-    //TEST 7: MANUAL DATA ENTRY -> GRAPH STRUCTURE
+    //TEST 7: MANUAL DATA ENTRY -> GRAPH STRUCTURE - PASSED
         /*
         std::cout << "BEGIN MANUAL ENTRY GRAPH TEST" << std::endl;
 
@@ -151,7 +155,51 @@ int main()
 
         std::cout << "BEGIN MANUAL ENTRY GRAPH TEST" << std::endl;
         */
+    
+    //TEST 8: BFS TEST - PASSED INITIAL TESTING
+        
+        std::cout << "BEGIN BFS TEST" << std::endl;
+        std::cout << std::endl;
 
+        Graph graph = Graph("data/airports.dat", "data/routes.dat");
+
+        //bool omitUnconnected = false;
+        //graph.writeGraph("output/graph_data.dat", omitUnconnected);
+
+        Graph::Vertex start = graph.getVertex("Kasese Airport");
+        //Graph::Vertex start = graph.getVertex("Yarram Airport");
+        vector<Graph::Vertex> traversal = graph.bfs(start);
+
+        graph.write_bfs(traversal, "output/bfs_test2.dat");
+
+        std::cout << std::endl;
+        std::cout << "END BFS TEST" << std::endl;
+        
+
+    //TEST 9: DTSRA TEST - PASSED INITIAL TESTING, needs complicated testing
+        /*
+        std::cout << "BEGIN DSTRA TEST" << std::endl;
+        std::cout << std::endl;
+
+        Graph graph = Graph("data/airports.dat", "data/routes.dat");
+
+        //bool omitUnconnected = false;
+        //graph.writeGraph("output/graph_data.dat", omitUnconnected);
+        
+        //graph.testMinHeap();
+
+        //Graph::Vertex start = graph.getVertex(890);
+        //Graph::Vertex end = graph.getVertex(891);
+        Graph::Vertex start = graph.getVertex("SFO");
+        Graph::Vertex end = graph.getVertex("Kinmen Airport");
+        vector<Graph::Vertex> path = graph.dstra(start, end);
+        //std::cout << "PATH FINDING DONE" << std::endl;
+
+        graph.write_dstra(path, "output/dstra_test.dat");
+
+        std::cout << std::endl;
+        std::cout << "END DSTRA TEST" << std::endl;
+        */
 
     return 0;
 }
