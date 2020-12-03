@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <iostream>
 #include <ostream>
+#include <queue>
+#include <algorithm>
 
 using std::vector;
 using std::string;
@@ -13,6 +15,8 @@ using std::map;
 using std::list;
 using std::unordered_map;
 using std::ostream;
+using std::priority_queue;
+using std::find;
 
 /** 
  * OpenFlights dataset graph implementation
@@ -146,7 +150,7 @@ class Graph
         //vector<Vertex> bfs(int startCode);
 
         /** Method for calculating shortest path between two airports using Dijkstra's algorithm */
-        //vector<Vertex> dstra(int startCode, int endCode);
+        vector<Vertex> dstra(int startCode, int endCode);
 
         /** Method for calculating shortest landmark path between two airports */
         //vector<Vertex> landmark(int startCode, int midCode, int endCode);
