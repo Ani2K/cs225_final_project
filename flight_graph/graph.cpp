@@ -1,15 +1,13 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-<<<<<<< HEAD
-=======
 #include <cmath>
 #include <queue>
->>>>>>> 45272d762e833e9c8f8d9b17a4c579361b5b6265
 #include "graph.h"
 
 using std::vector;
@@ -18,13 +16,10 @@ using std::map;
 using std::ifstream;
 using std::ofstream;
 using std::stringstream;
-<<<<<<< HEAD
-=======
 using std::unordered_map;
 using std::queue;
 using std::priority_queue;
 using std::pair;
->>>>>>> 45272d762e833e9c8f8d9b17a4c579361b5b6265
 
 Graph::Graph()
 {
@@ -35,18 +30,18 @@ Graph::Graph(string airportFile_, string routeFile_)
 {
     airportFile = airportFile_;
     routeFile = routeFile_;
-    processAirportData(airportFile);
-    processRouteData(routeFile);
+    processAirportData();
+    processRouteData();
 }
 
 Graph::Graph(string dataFile, int choice)
 {
     if (choice == 0) {
         airportFile = dataFile;
-        processAirportData(airportFile);
+        processAirportData();
     } else if (choice == 1) {
         routeFile = dataFile;
-        processRouteData(routeFile);
+        processRouteData();
     }
 }
 
@@ -131,65 +126,58 @@ void Graph::write_bfs(vector<Graph::Vertex> traversal, string outputFile)
 
 vector<Graph::Vertex> Graph::dstra(Vertex start, Vertex end)
 {
-    //Initialize start and end codes
+    vector<Vertex> path;
     int startCode = start.code;
     int endCode = end.code;
 
-    //Initialize path to be returned
-    vector<Vertex> path;
-
-    //Return empty path if start and end vertexes are the same
     if (graph.find(startCode) == graph.end() || graph.find(endCode) == graph.end()) {
         return path;
     }
-
-    //Reset and initialize the tenative distance value
+    
     for (pair<int, Vertex> p : graph) {
         p.second.tentDist = -3;
     }
+    
     graph[startCode].tentDist = 0;
+    unordered_map<int, int> prev;  // initialize a map that maps current node -> its previous node
+    priority_queue<Vertex, vector<Vertex>, std::greater<Vertex>> priority;   // initialize the priority queue, minheap
+    unordered_map<int, bool> visited; //might want to replace with set of some sort?
 
-    // initialize a map that maps current node -> its previous node
-    unordered_map<int, int> previous;
+    /** Writes traversal for debugging */
+    //ofstream fileWriter;
+    //fileWriter.open("output/dstra_debug.dat");
 
-    // initialize the priority queue
-    priority_queue<Vertex, vector<Vertex>, std::greater<Vertex>> pq;
-    pq.push(graph[startCode]);
-
-    //initialize visited
-    unordered_map<int, bool> visited;
-
-    while (!pq.empty() || pq.top().code != endCode) {
-        //get the current_node from priority_queue
-        Vertex current_vertex = pq.top();
-        pq.pop();
-
-        //for neighbor in current_node's neighbors and not in visited:
-        for (Edge edge: current_vertex.adjList) {
+    priority.push(graph[startCode]);
+    while (!priority.empty()) {
+        if (priority.top().code == endCode) {
+            break;
+        }
+        Vertex curr = priority.top();
+        priority.pop();
+        //fileWriter << "CURR " << curr.name << ", " << curr.tentDist << std::endl;
+        for (Edge edge: curr.adjList) {
             if (visited.find(edge.destCode) == visited.end()) {
                 if (graph[edge.destCode].tentDist != -3) {
-                    if (graph[edge.destCode].tentDist < (edge.dist + current_vertex.tentDist)) {
-                        //Don't do anything, neightbor isn't updated
+                    if (graph[edge.destCode].tentDist < (edge.dist + curr.tentDist)) {
                         //fileWriter << "NEIGHBOR NO UPDATE " << graph[edge.destCode].name << ", " << graph[edge.destCode].tentDist << std::endl;
                     } else {
-                        graph[edge.destCode].tentDist = edge.dist + current_vertex.tentDist;
-                        pq.push(graph[edge.destCode]);
-                        previous[edge.destCode] = current_vertex.code;
+                        graph[edge.destCode].tentDist = edge.dist + curr.tentDist;
+                        priority.push(graph[edge.destCode]);
+                        prev[edge.destCode] = curr.code;
                         //fileWriter << "NEIGHBOR UPDATE " << graph[edge.destCode].name << ", " << graph[edge.destCode].tentDist << std::endl;
                     }
                 } else {
-                    graph[edge.destCode].tentDist = edge.dist + current_vertex.tentDist;
-                    pq.push(graph[edge.destCode]);
-                    previous[edge.destCode] = current_vertex.code;
+                    graph[edge.destCode].tentDist = edge.dist + curr.tentDist;
+                    priority.push(graph[edge.destCode]);
+                    prev[edge.destCode] = curr.code;
                     //fileWriter << "NEIGHBOR UPDATE " << graph[edge.destCode].name << ", " << graph[edge.destCode].tentDist << std::endl;
                 }
             }
         }
-        //save current_node into visited
-        visted[current_vertex.code] = true;
+        visited[curr.code] =  true;
     }
+    //fileWriter.close();
 
-    //extract path from previous
     if (!priority.empty()) {
         Vertex curr = priority.top();
         while (true) {
@@ -201,11 +189,9 @@ vector<Graph::Vertex> Graph::dstra(Vertex start, Vertex end)
             }
         }
         std::reverse(path.begin(), path.end());
-        //return path and distance
         return path;
     } else {
         std::cout << "NO PATH" << std::endl;
-        //return path and distance
         return path;
     }
 }
@@ -270,7 +256,6 @@ void Graph::testMinHeap()
     Vertex v4 = Vertex();
     v4.name = "AIR4";
     //v4.tentDist = 40;
-
     priority_queue<Vertex, vector<Vertex>, std::greater<Vertex>> pq;
     //priority_queue<Vertex> pq;
     pq.push(v1);
@@ -286,6 +271,7 @@ void Graph::testMinHeap()
     }
     std::cout << std::endl;
 }
+*/
 
 vector<Graph::Vertex> Graph::landmark(Vertex start, Vertex mid, Vertex end)
 {
@@ -307,7 +293,7 @@ void Graph::processAirportData()
             stringstream lineRead(airportLine);
             string data;
             int code_ = -1; string name_ = "EMPTY"; string city_ = "EMPTY"; string city2_ = "EMPTY"; string country_ = "EMPTY"; 
-            string code_iata_ = "EMPTY"; string code_icao_ = "EMPTY"; long double lat_ = -1; long double lng_ = -1;
+            string code_iata_ = "EMPTY"; string code_icao_ = "EMPTY"; long double lat_ = -2; long double lng_ = -2;
             
             vector<string> entries;
             while (getline(lineRead, data, ',')) {
@@ -320,6 +306,7 @@ void Graph::processAirportData()
                 data = entries[i];
                 data.erase(remove(data.begin(), data.end(), '"'), data.end());
                 
+                /** Refer to data/unused_data/data_entry_pattern.txt for data entry pattern */
                 if (size > 14) {
                     if (i == 0 || i > 4) {
                         data.erase(remove(data.begin(), data.end(), ' '), data.end());
@@ -336,16 +323,13 @@ void Graph::processAirportData()
                     }
                 }
 
-                switch (i)
-                {
+                switch (i) {
                     case 0:
                         code_ = std::stoi(data);
                         break;
-
                     case 1:
                         name_ = data;
                         break;
-                    
                     case 2:
                         if (name_ != "Paloich Airport") {
                             city_ = data;
@@ -354,9 +338,7 @@ void Graph::processAirportData()
                             name_ += ", ";
                             name_ += data;
                         }
-                        
                         break;
-
                     case 3:
                         if (size > 14) {
                             if (anomalyEntry) {
@@ -368,7 +350,6 @@ void Graph::processAirportData()
                             country_ = data;
                         }
                         break;
-
                     case 4:
                         if (size > 14) {
                             country_ = data;
@@ -376,7 +357,6 @@ void Graph::processAirportData()
                             code_iata_ = data;
                         }
                         break;
-                    
                     case 5:
                         if (size > 14) {
                             code_iata_ = data;
@@ -384,7 +364,6 @@ void Graph::processAirportData()
                             code_icao_ = data;
                         }
                         break;
-                    
                     case 6:
                         if (size > 14) {
                             code_icao_ = data;
@@ -392,7 +371,6 @@ void Graph::processAirportData()
                             lat_ = std::stold(data);
                         }
                         break;
-
                     case 7:
                         if (size > 14) {
                             lat_ = std::stold(data);
@@ -400,7 +378,6 @@ void Graph::processAirportData()
                             lng_ = std::stold(data);
                         }
                         break;
-
                     case 8:
                         if (size > 14) {
                             lng_ = std::stold(data);
@@ -409,14 +386,10 @@ void Graph::processAirportData()
                 }
             }
 
-            if (code_iata_.length() == 3) {
-                airportDict[code_iata_] = code_;
-            } else {
+            if (code_iata_.length() != 3) {
                 code_iata_ = "EMPTY";
             }
-            if (code_icao_.length() == 4) {
-                airportDict[code_icao_] = code_;
-            } else {
+            if (code_icao_.length() != 4) {
                 code_icao_ = "EMPTY";
             }
 
@@ -425,7 +398,7 @@ void Graph::processAirportData()
             currAirport.country = country_; currAirport.code_iata = code_iata_; currAirport.code_icao = code_icao_;
             currAirport.lat = lat_; currAirport.lng = lng_;
 
-            airports[code_] = currAirport;
+            addVertex(currAirport);
         }
     } else {
         std::cout << "NO AIRPORT DATA" << std::endl;
@@ -433,7 +406,7 @@ void Graph::processAirportData()
     airportFileReader.close();
 }
 
-void Graph::processRouteData(string routeFile)
+void Graph::processRouteData()
 {
     ifstream routeFileReader(routeFile);
     string routeLine;
@@ -444,85 +417,74 @@ void Graph::processRouteData(string routeFile)
             string data;
             int dataCount = 0;
             string airline_ = "EMPTY"; string sourceCode_letter_ = "EMPTY"; int sourceCode_ = -1; 
-            string destCode_letter_ = "EMPTY"; int destCode_ = -1; long double dist_ = -2;
+            string destCode_letter_ = "EMPTY"; int destCode_ = -1; long double dist_ = -2; int stops_ = -3;
             
             while (getline(lineRead, data, ',')) {
-                switch (dataCount)
-                {
+
+                /** Refer to data/unused_data/data_entry_pattern.txt for data entry pattern */
+                switch (dataCount) {
                     data.erase(remove(data.begin(), data.end(), '"'), data.end());
                     data.erase(remove(data.begin(), data.end(), ' '), data.end());
                     case 0:
-                        /** 2 Letter IATA or 3 Letter ICAO Airline Code */
                         airline_ = data;
                         break;
-
-                    case 1:
-                        /** Open Flights Airline Code */
-                        break;
-
                     case 2:
-                        /** 3 Letter IATA or 4 Letter ICAO Source Airport Code */
                         sourceCode_letter_ = data;
                         break;
-
                     case 3:
-                        /** Open Flights Source Airport Code */
                         try
                         {
                             sourceCode_ = std::stoi(data);
                         }
                         catch(const std::invalid_argument& e)
                         {
-                            map<string, int>::iterator lookup = airportDict.find(sourceCode_letter_);
-                            if (lookup != airportDict.end()) {
-                                sourceCode_ = lookup->second;
-                            }
+                            sourceCode_ = convertToCode(sourceCode_letter_);
                         }
                         break;
-                    
                     case 4:
-                        /** 3 Letter IATA or 4 Letter ICAO Dest Airport Code */
                         destCode_letter_ = data;
                         break;
-
                     case 5:
-                        /** Open Flights Dest Airport Code */
                         try
                         {
                             destCode_ = std::stoi(data);
                         }
                         catch(const std::invalid_argument& e)
                         {
-                            map<string, int>::iterator lookup = airportDict.find(destCode_letter_);
-                            if (lookup != airportDict.end()) {
-                                destCode_ = lookup->second;
-                            }
+                            destCode_ = convertToCode(destCode_letter_);
                         }
                         break;
-
-                    case 6:
-                        /** Codeshare or Not */
-                        break;
-                    
                     case 7:
-                        /** Number of Stops */
+                        try
+                        {
+                            stops_ = std::stoi(data);
+                        }
+                        catch(const std::invalid_argument& e) {}
                         break;
-                    
-                    case 8:
-                        /** Plane Types Used on Flight */
-                        break;
-                    
                 }
-                
                 dataCount++;
             }
 
-            /** NOTE: NEED TO CALC DIST AS A FUNCTION OF SOURCE (LAT, LNG) AND DEST (LAT, LNG) */
             Edge currEdge = Edge();
             currEdge.airline = airline_; currEdge.sourceCode_letter = sourceCode_letter_; currEdge.sourceCode = sourceCode_; 
-            currEdge.destCode_letter = destCode_letter_; currEdge.destCode = destCode_; currEdge.dist = dist_;
+            currEdge.destCode_letter = destCode_letter_; currEdge.destCode = destCode_; currEdge.dist = dist_; currEdge.stops = stops_;
 
-            routes.emplace_back(currEdge);
+            unordered_map<int, Vertex>::iterator lookupSource = graph.find(sourceCode_);
+            unordered_map<int, Vertex>::iterator lookupDest = graph.find(destCode_);
+
+            if (lookupSource != graph.end() && lookupDest != graph.end()) {
+                long double lat1 = lookupSource->second.lat;
+                long double lng1 = lookupSource->second.lng;
+                long double lat2 = lookupDest->second.lat;
+                long double lng2 = lookupDest->second.lng;
+
+                dist_ = calcDistance(lat1, lng1, lat2, lng2);
+                currEdge.dist = dist_;
+                addEdge(currEdge);
+            } else {
+                invalidRoutes.emplace_back(currEdge);
+                allRoutes.emplace_back(currEdge);
+            }
         }
     } else {
         std::cout << "NO ROUTE DATA" << std::endl;
@@ -813,7 +775,7 @@ void Graph::writeGraph(string outputFile, bool omitUnconnected)
 
 void Graph::printAirportData()
 {
-    for (std::pair<int, Vertex> curr : airports) {
+    for (std::pair<int, Vertex> curr : graph) {
         std::cout << std::endl;
         std::cout << "------------AIRPORT ENTRY------------" << std::endl;
         std::cout << std::endl;
@@ -834,9 +796,15 @@ void Graph::printAirportData()
     }
 }
 
-void Graph::printRouteData()
+void Graph::printRouteData(bool validOnly)
 {
-    for (Edge edge : routes) {
+    for (Edge edge : allRoutes) {
+        if (validOnly) {
+            if (edge.dist == -2) {
+                continue;
+            }
+        }
+
         std::cout << std::endl;
         std::cout << "-------------ROUTE ENTRY-------------" << std::endl;
         std::cout << std::endl;
@@ -847,6 +815,11 @@ void Graph::printRouteData()
         std::cout << "DEST CODE LETTER [" << edge.destCode_letter << "]" << std::endl;
         std::cout << "DEST CODE [" << edge.destCode << "]" << std::endl;
         std::cout << "DIST [" << edge.dist << "]" << std::endl;
+        if (edge.stops != 0) {
+            std::cout << "STOPS [" << edge.stops << "]" << std::endl;
+        } else {
+            std::cout << "DIRECT" << std::endl;
+        }
 
         std::cout << std::endl;
         std::cout << "-----------END ROUTE ENTRY-----------" << std::endl;
@@ -858,7 +831,7 @@ void Graph::writeAirportData(string outputFile)
 {
     ofstream fileWriter;
     fileWriter.open(outputFile);
-    for (std::pair<int, Vertex> curr : airports) {
+    for (std::pair<int, Vertex> curr : graph) {
         fileWriter << std::endl;
         fileWriter << "------------AIRPORT ENTRY------------" << std::endl;
         fileWriter << std::endl;
@@ -880,11 +853,17 @@ void Graph::writeAirportData(string outputFile)
     fileWriter.close();
 }
 
-void Graph::writeRouteData(string outputFile)
+void Graph::writeRouteData(string outputFile, bool validOnly)
 {
     ofstream fileWriter;
     fileWriter.open(outputFile);
-    for (Edge edge : routes) {
+    for (Edge edge : allRoutes) {
+        if (validOnly) {
+            if (edge.dist == -2) {
+                continue;
+            }
+        }
+
         fileWriter << std::endl;
         fileWriter << "-------------ROUTE ENTRY-------------" << std::endl;
         fileWriter << std::endl;
@@ -895,6 +874,11 @@ void Graph::writeRouteData(string outputFile)
         fileWriter << "DEST CODE LETTER [" << edge.destCode_letter << "]" << std::endl;
         fileWriter << "DEST CODE [" << edge.destCode << "]" << std::endl;
         fileWriter << "DIST [" << edge.dist << "]" << std::endl;
+        if (edge.stops != 0) {
+            fileWriter << "STOPS [" << edge.stops << "]" << std::endl;
+        } else {
+            fileWriter << "DIRECT" << std::endl;
+        }
 
         fileWriter << std::endl;
         fileWriter << "-----------END ROUTE ENTRY-----------" << std::endl;
