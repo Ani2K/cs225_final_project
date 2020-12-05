@@ -204,6 +204,9 @@ class Graph
         /** Breadth first traversal of the flight graph */
         vector<Vertex> bfs(Vertex start);
 
+        //alternate version of bfs
+        vector<Vertex> bfs2(Vertex start);
+
         void print_bfs(vector<Vertex> traversal);
 
         void write_bfs(vector<Vertex> traversal, string outputFile);

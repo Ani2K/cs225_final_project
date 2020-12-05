@@ -90,6 +90,31 @@ vector<Graph::Vertex> Graph::bfs(Vertex start)
     return traversal;
 }
 
+vector<Graph::Vertex> Graph::bfs2(Vertex start){
+    unordered_map<int, bool> visited;
+    queue<Vertex> q;
+    vector<Vertex> traversal;
+
+    visited[start.code] = true;
+    q.push(start);
+
+    while(!q.empty()){
+        Vertex curr = q.front();
+        traversal.push_back(curr);
+        q.pop();
+
+        //adjacent nodes
+        for(Edge edge : curr.adjList){
+            Vertex adj = graph[edge.destCode];
+            if(visited.find(adj.code) == visited.end()){
+                q.push(adj);
+                visited[adj.code] = true;
+            }
+        }
+    }
+    return traversal;
+}
+
 void Graph::print_bfs(vector<Graph::Vertex> traversal)
 {
     std::cout << "---BFS TRAVERSAL OF GRAPH STARTING FROM [";
@@ -104,6 +129,7 @@ void Graph::print_bfs(vector<Graph::Vertex> traversal)
     std::cout << std::endl;
     std::cout << "---END OF TRAVERSAL---";
 }
+
 
 void Graph::write_bfs(vector<Graph::Vertex> traversal, string outputFile)
 {
