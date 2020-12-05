@@ -299,14 +299,12 @@ void Graph::testMinHeap()
 }
 */
 
-vector<Graph::Vertex> Graph::landmark(Vertex start, Vertex mid, Vertex end)
+vector<Graph::Vertex> Graph::landmark(Graph::Vertex start, Graph::Vertex mid, Graph::Vertex end)
 {
-    /** to supress warnings */
-    start.code = start.code;
-    mid.code = mid.code;
-    end.code = end.code;
-    vector<Vertex> path;
-    return path;
+    vector<Vertex> startToMid = dstra(start, mid);
+    vector<Vertex> midToEnd = dstra(mid,end);
+    startToMid.insert(startToMid.end(), midToEnd.begin(), midToEnd.end());
+    return startToMid;
 }
 
 void Graph::processAirportData()
