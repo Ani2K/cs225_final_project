@@ -12,7 +12,7 @@ At our last meeting, we made some design choices regarding weights for graph edg
 
 11/29 - 12/05
 -------------
-
+This week, we completed two pathing algorithms. Tara did the BFS algorithm, and Jacob did Dijkstra's algorithm along with Ani. Light testing was done on these, so we plan to add a greater number of tests by next week, as well as tests that go over more complex flight routes. Tara will also be doing the landmark algorithm, which is the final method that we ned to complete for the project. As a side note, we met with our project coordinator this week.  
 
 12/05 - 12/11
 -------------
