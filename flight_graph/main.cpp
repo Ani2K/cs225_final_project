@@ -170,7 +170,7 @@ int main()
         //Graph::Vertex start = graph.getVertex("Yarram Airport");
         vector<Graph::Vertex> traversal = graph.bfs(start);
 
-        graph.write_bfs(traversal, "output/bfs_test2.dat");
+        //graph.write_bfs(traversal, "output/bfs_test2.dat");
 
         std::cout << std::endl;
         std::cout << "END BFS TEST" << std::endl;

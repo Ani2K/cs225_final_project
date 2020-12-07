@@ -69,6 +69,12 @@
         "random": "cpp",
         "set": "cpp",
         "string": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "condition_variable": "cpp",
+        "optional": "cpp",
+        "string_view": "cpp",
+        "future": "cpp",
+        "thread": "cpp",
+        "regex": "cpp"
     }
 }
