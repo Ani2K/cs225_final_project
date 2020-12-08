@@ -1,8 +1,9 @@
 #include <string>
 #include <vector>
-
-#include "../catch/catch.hpp"
 #include "../graph.h"
+
+//Catch Files sourced from https://github-dev.cs.illinois.edu/cs225-fa20/rittika2-gcevans-bradsol-xz33
+#include "../catch/catch.hpp"
 
 /**
  * For testing Dijkstra's shortest path algorithm.
@@ -23,7 +24,7 @@ TEST_CASE("TEST DIJKSTRA SHORTEST PATH") {
     vector<Graph::Vertex> path = graph.dstra(start, end);
     //std::cout << "PATH FINDING DONE" << std::endl;
 
-    graph.write_dstra(path, "output/dstra_test.dat");
+    graph.write_dstra(path, "output/dstra_output/dstra_test1.dat");
 
     //std::cout << std::endl;
     //std::cout << "END DSTRA TEST" << std::endl;

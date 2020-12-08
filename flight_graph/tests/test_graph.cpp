@@ -1,133 +1,40 @@
 #include <string>
 #include <vector>
-
-#include "../catch/catch.hpp"
+#include <cmath>
 #include "../graph.h"
+
+//Catch Files sourced from https://github-dev.cs.illinois.edu/cs225-fa20/rittika2-gcevans-bradsol-xz33
+#include "../catch/catch.hpp"
 
 /**
  * For testing data processing and graph structure.
  */
-
 TEST_CASE("TEST DATA PROCESSING SHORT") {
-        Graph graph = Graph("data/airports_text_short.txt", "data/routes_text_short.txt");
+    Graph graph = Graph("data/airports_text_short.txt", "data/routes.dat");
 
-    //std::cout << "BEGIN DATA PROCESSING TEST" << std::endl;
+    bool omitUnconnected = false;
+    graph.writeGraph("output/graph_output/graph_data_short.dat", omitUnconnected);
 
-    bool validOnly = false;
-    //graph.writeAirportData("output/processed_airport_data.dat");
-    //graph.writeRouteData("output/processed_route_data.dat", validOnly);
-
-    //std::cout << "END DATA PROCESSING TEST" << std::endl;
-
-    REQUIRE("hello" == "hello");
+    Graph::Vertex v1 = graph.getVertex("Kangerlussuaq Airport");
+        REQUIRE(v1.adjList.size() == 2);
 }
 
-TEST_CASE("TEST DATA PROCCESSING AIRPORT LONG") {
-    Graph graph = Graph("data/airports.dat", 0);
-
-    //std::cout << "BEGIN DATA PROCESSING TEST" << std::endl;
-
-    //graph.writeAirportData("output/processed_airport_data.dat");
-
-    //std::cout << "END DATA PROCESSING TEST" << std::endl;
-
-    REQUIRE("hello" == "hello");
-}
-
-TEST_CASE("TEST DATA PROCCESSING ROUTES LONG") {
-    Graph graph = Graph("data/routes.dat", 1);
-
-    //std::cout << "BEGIN DATA PROCESSING TEST" << std::endl;
-
-    bool validOnly = false;
-    //graph.writeRouteData("output/processed_route_data.dat", validOnly);
-
-    //std::cout << "END DATA PROCESSING TEST" << std::endl;
-
-    REQUIRE("hello" == "hello");
-}
-
-TEST_CASE("TEST DATA PROCCESSING LONG") {
-    Graph graph = Graph("data/airports.dat", "data/routes.dat");
-
-    //std::cout << "BEGIN DATA PROCESSING TEST" << std::endl;
-
-    bool validOnly = false;
-    //graph.writeAirportData("output/processed_airport_data.dat");
-    //graph.writeRouteData("output/processed_route_data.dat", validOnly);
-
-    //std::cout << "END DATA PROCESSING TEST" << std::endl;
-
-    REQUIRE("hello" == "hello");
-}
-
-TEST_CASE("TEST GRAPH STRUCTURE") {
-    //std::cout << "BEGIN GRAPH STRUCTURE TEST" << std::endl;
+TEST_CASE("TEST DATA PROCESSING & UPDATING LONG") {
     Graph graph = Graph("data/airports.dat", "data/routes.dat");
 
     bool omitUnconnected = false;
-    graph.writeGraph("output/graph_data.dat", omitUnconnected);
+    graph.writeGraph("output/graph_output/graph_data.dat", omitUnconnected);
 
-    //graph.updateData("data/airports_text_short.txt", "data/routes.dat");
-    //graph.writeGraph("output/graph_data_short.dat", omitUnconnected);
+    Graph::Vertex v1 = graph.getVertex("Kangerlussuaq Airport");
+        REQUIRE(v1.adjList.size() == 7);
 
-    //std::cout << "END GRAPH STRUCTURE TEST" << std::endl;
+    graph.updateData("data/airports_text_short.txt", "data/routes.dat");
 
-    REQUIRE("hello" == "hello");
-}
-
-TEST_CASE("TEST GRAPH STRUCTURE RETRIEVAL & ADDITIONS") {
-    //std::cout << "BEGIN GRAPH STRUCTURE TEST" << std::endl;
-    //std::cout << std::endl;
-
-    Graph graph = Graph("data/airports.dat", "data/routes.dat");
-
-    bool omitUnconnected = false;
-    graph.writeGraph("output/graph_data.dat", omitUnconnected);
-
-    Graph::Vertex v1 = graph.getVertex("Chicago O'Hare International Airport");
-    Graph::Vertex v2 = graph.getVertex("SFO");
-    Graph::Vertex v3 = graph.getVertex(9239);
-
-    Graph::Edge e1 = graph.getEdge("ORD", "SFO");
-    Graph::Edge e2 = graph.getEdge(9239, 3830);
-
-    v1.printInfo();
-    v2.printInfo();
-    v3.printInfo();
-    e1.printInfo();
-    e2.printInfo();
-
-    graph.addEdge(v1, v3, "FAKE PLANE", 0);
-    e2 = graph.getEdge("ORD", "CND4");
-    e2.printInfo();
-    e2 = graph.getEdge(v3, v1);
-    e2.printInfo();
-
-    graph.addEdge(v3, v1, "FAKER PLANE", 0);
-    e2 = graph.getEdge(v3, v1);
-    e2.printInfo();
-
-    graph.addEdge("FAKEAIRPORT", "CND4", "FAKEST PLANE", 0);
-    Graph::Edge e3 = graph.getEdge("FAKEAIRPORT", "CND4");
-    e3.printInfo();
-
-    graph.addEdge("SFO", "CND4", "FAKEST PLANE", 0);
-    e3 = graph.getEdge("SFO", "CND4");
-    e3.printInfo();
-    graph.removeEdge("SFO", "CND4", "FAKEST PLANE", 0);
-    e3 = graph.getEdge("SFO", "CND4");
-    e3.printInfo();
-
-    //std::cout << std::endl;
-    //std::cout << "END GRAPH STRUCTURE TEST" << std::endl;
-
-    REQUIRE("hello" == "hello");
+    v1 = graph.getVertex("Kangerlussuaq Airport");
+        REQUIRE(v1.adjList.size() == 2);
 }
 
 TEST_CASE("TEST GRAPH STRUCTURE MANUAL ENTRY") {
-    //std::cout << "BEGIN MANUAL ENTRY GRAPH TEST" << std::endl;
-
     Graph graph = Graph();
     graph.addVertex(Graph::Vertex(1, "AIRPORT 1", "CITY 1", "EMPTY", "COUNTRY 1", 
             "CODE1-1", "CODE1-2", -51.231243214, 1.1231242134) );
@@ -151,9 +58,111 @@ TEST_CASE("TEST GRAPH STRUCTURE MANUAL ENTRY") {
             graph.getVertex(5).lat, graph.getVertex(5).lng), 0) );
     
     bool omitUnconnected = false;
-    graph.writeGraph("output/graph_data_manual.dat", omitUnconnected);
+    graph.writeGraph("output/graph_output/graph_data_manual.dat", omitUnconnected);
 
-    //std::cout << "END MANUAL ENTRY GRAPH TEST" << std::endl;
+    Graph::Vertex v1 = graph.getVertex("AIRPORT 1");
+        REQUIRE(v1.name == "AIRPORT 1");
+    Graph::Vertex v2 = graph.getVertex("AIRPORT 2");
+        REQUIRE(v2.name == "AIRPORT 2");
+    Graph::Vertex v3 = graph.getVertex("AIRPORT 3");
+        REQUIRE(v3.name == "AIRPORT 3");
+    Graph::Vertex v4 = graph.getVertex("AIRPORT 4");
+        REQUIRE(v4.name == "AIRPORT 4");
+    Graph::Vertex v5 = graph.getVertex("AIRPORT 5");
+        REQUIRE(v5.name == "AIRPORT 5");
 
-    REQUIRE("hello" == "hello");
+    Graph::Edge e1 = graph.getEdge("AIRPORT 1", "AIRPORT 4");
+        REQUIRE(e1.sourceCode_letter == "CODE1-1");
+        REQUIRE(e1.destCode_letter == "CODE4-2");
+    Graph::Edge e2 = graph.getEdge("AIRPORT 2", "AIRPORT 4");
+        REQUIRE(e2.sourceCode_letter == "CODE2-1");
+        REQUIRE(e2.destCode_letter == "CODE4-2");
+    Graph::Edge e3 = graph.getEdge("AIRPORT 3", "AIRPORT 5");
+        REQUIRE(e3.sourceCode_letter == "CODE3-1");
+        REQUIRE(e3.destCode_letter == "CODE5-2");
+}
+
+TEST_CASE("TEST GRAPH STRUCTURE RETRIEVAL & MANIPULATION") {
+    Graph graph = Graph("data/airports.dat", "data/routes.dat");
+
+    //bool omitUnconnected = false;
+    //graph.writeGraph("output/graph_output/graph_data.dat", omitUnconnected);
+
+    Graph::Vertex v1 = graph.getVertex("Chicago O'Hare International Airport");
+        REQUIRE(v1.code == 3830);
+        REQUIRE(v1.name == "Chicago O'Hare International Airport");
+        REQUIRE(v1.city == "Chicago");
+        REQUIRE(v1.city2 == "EMPTY");
+        REQUIRE(v1.country == "United States");
+        REQUIRE(v1.code_iata == "ORD");
+        REQUIRE(v1.code_icao == "KORD");
+        REQUIRE(std::abs(v1.lat - 41.9786) <= 0.01);
+        REQUIRE(std::abs(v1.lng - -87.9048) <= 0.01);
+    Graph::Vertex v2 = graph.getVertex("SFO");
+        REQUIRE(v2.code == 3469);
+        REQUIRE(v2.name == "San Francisco International Airport");
+        REQUIRE(v2.city == "San Francisco");
+        REQUIRE(v2.city2 == "EMPTY");
+        REQUIRE(v2.country == "United States");
+        REQUIRE(v2.code_iata == "SFO");
+        REQUIRE(v2.code_icao == "KSFO");
+        REQUIRE(std::abs(v2.lat - 37.61899948120117) <= 0.01);
+        REQUIRE(std::abs(v2.lng - -122.375) <= 0.01);
+    Graph::Vertex v3 = graph.getVertex(9239);
+        REQUIRE(v3.code == 9239);
+        REQUIRE(v3.name == "Stanhope Municipal Airport");
+        REQUIRE(v3.city == "Haliburton");
+        REQUIRE(v3.city2 == "EMPTY");
+        REQUIRE(v3.country == "Canada");
+        REQUIRE(v3.code_iata == "EMPTY");
+        REQUIRE(v3.code_icao == "CND4");
+        REQUIRE(std::abs(v3.lat - 45.1108333333) <= 0.01);
+        REQUIRE(std::abs(v3.lng - -78.64) <= 0.01);
+
+    Graph::Edge e1 = graph.getEdge("ORD", "SFO");
+        REQUIRE(e1.airline == "AA");
+        REQUIRE(e1.sourceCode_letter == "ORD");
+        REQUIRE(e1.sourceCode == 3830);
+        REQUIRE(e1.destCode_letter == "SFO");
+        REQUIRE(e1.destCode == 3469);
+        REQUIRE(std::abs(e1.dist - 2963.96) <= 1);
+        REQUIRE(e1.stops == 0);
+    Graph::Edge e2 = graph.getEdge(9239, 3830);
+        REQUIRE(e2.airline == "EMPTY");
+        REQUIRE(e2.sourceCode_letter == "EMPTY");
+        REQUIRE(e2.sourceCode == -1);
+        REQUIRE(e2.destCode_letter == "EMPTY");
+        REQUIRE(e2.destCode == -1);
+        REQUIRE(e2.dist == -2);
+        REQUIRE(e2.stops == -3);
+
+    graph.addEdge(v1, v3, "FAKE PLANE", 0);
+    e2 = graph.getEdge("ORD", "CND4");
+        REQUIRE(e2.sourceCode_letter == "ORD");
+        REQUIRE(e2.destCode_letter == "CND4");
+        REQUIRE(std::abs(e2.dist - 823.294) <= 1);
+    e2 = graph.getEdge(v3, v1);
+        REQUIRE(e2.sourceCode_letter == "EMPTY");
+        REQUIRE(e2.destCode_letter == "EMPTY");
+        REQUIRE(e2.dist == -2);
+    graph.addEdge(v3, v1, "FAKER PLANE", 0);
+    e2 = graph.getEdge(v3, v1);
+        REQUIRE(e2.sourceCode_letter == "CND4");
+        REQUIRE(e2.destCode_letter == "ORD");
+        REQUIRE(std::abs(e2.dist - 823.294) <= 1);
+    graph.addEdge("FAKEAIRPORT", "CND4", "FAKEST PLANE", 0);
+    Graph::Edge e3 = graph.getEdge("FAKEAIRPORT", "CND4");
+        REQUIRE(e3.sourceCode_letter == "EMPTY");
+        REQUIRE(e3.destCode_letter == "EMPTY");
+        REQUIRE(e3.dist == -2);
+    graph.addEdge("SFO", "CND4", "FAKEST PLANE", 0);
+    e3 = graph.getEdge("SFO", "CND4");
+        REQUIRE(e3.sourceCode_letter == "SFO");
+        REQUIRE(e3.destCode_letter == "CND4");
+        REQUIRE(std::abs(e3.dist -  3696.32) <= 1);
+    graph.removeEdge("SFO", "CND4", "FAKEST PLANE", 0);
+    e3 = graph.getEdge("SFO", "CND4");
+        REQUIRE(e3.sourceCode_letter == "EMPTY");
+        REQUIRE(e3.destCode_letter == "EMPTY");
+        REQUIRE(e3.dist == -2);
 }

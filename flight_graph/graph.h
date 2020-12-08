@@ -201,7 +201,9 @@ class Graph
         /** Flight graph assignment operator */
         Graph const & operator=(const Graph & rhs);
 
-        /** Breadth first traversal of the flight graph */
+        /** Breadth first traversal of the flight graph 
+         *  Algorithm sourced from https://courses.engr.illinois.edu/cs225/fa2020/resources/bfs-dfs/
+         */
         vector<Vertex> bfs(Vertex start);
 
         //alternate version of bfs
@@ -211,7 +213,9 @@ class Graph
 
         void write_bfs(vector<Vertex> traversal, string outputFile);
 
-        /** Method for calculating shortest path between two airports using Dijkstra's algorithm */
+        /** Method for calculating shortest path between two airports using Dijkstra's algorithm
+         *  Algorithm sourced from https://courses.engr.illinois.edu/cs225/fa2020/resources/dijkstra/
+         */
         vector<Vertex> dstra(Vertex start, Vertex end);
 
         void print_dstra(vector<Vertex> path);
