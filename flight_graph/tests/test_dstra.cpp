@@ -69,7 +69,7 @@ TEST_CASE("TEST DIJKSTRA SHORTEST PATH") {
     vector<Graph::Vertex> path = graph.dstra(start, end);
     //std::cout << "PATH FINDING DONE" << std::endl;
 
-    graph.write_dstra(path, "output/dstra_output/dstra_test1.dat");
+    graph.write_dstra(path, "output/dstra_output/dstra_test2.dat");
 
     //std::cout << std::endl;
     //std::cout << "END DSTRA TEST" << std::endl;
