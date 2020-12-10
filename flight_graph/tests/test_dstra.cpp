@@ -54,7 +54,7 @@ TEST_CASE("TEST DIJKSTRA SHORTEST PATH, MANUAL SMALL GRAPH") {
     
 } 
 
-TEST_CASE("TEST DIJKSTRA SHORTEST PATH", "[part=1]") {
+TEST_CASE("TEST DIJKSTRA SHORTEST PATH, EASY ") {
 	//std::cout << "BEGIN DSTRA TEST" << std::endl;
     //std::cout << std::endl;
 
@@ -74,5 +74,7 @@ TEST_CASE("TEST DIJKSTRA SHORTEST PATH", "[part=1]") {
     //std::cout << std::endl;
     //std::cout << "END DSTRA TEST" << std::endl;
 
-    REQUIRE("hello" == "hello");
+    REQUIRE(path[0].name == "Eindhoven Airport");
+    REQUIRE(path[1].name == "Alicante International Airport");
+    REQUIRE(path.size() == 2);
 }

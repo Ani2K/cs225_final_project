@@ -75,5 +75,5 @@ TEST_CASE("TEST LANDMARK PATH, NOT VIABLE PATH") {
     //std::cout << std::endl;
     //std::cout << "END LANDMARK TEST" << std::endl;
 
-    REQUIRE("hello" == "hello");
+    REQUIRE(path.size() < 2); //not viable path printed
 }
