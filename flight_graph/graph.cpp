@@ -302,6 +302,7 @@ void Graph::testMinHeap()
 vector<Graph::Vertex> Graph::landmark(Graph::Vertex start, Graph::Vertex mid, Graph::Vertex end)
 {
     vector<Vertex> startToMid = dstra(start, mid);
+    startToMid.pop_back();
     vector<Vertex> midToEnd = dstra(mid,end);
     startToMid.insert(startToMid.end(), midToEnd.begin(), midToEnd.end());
     return startToMid;
