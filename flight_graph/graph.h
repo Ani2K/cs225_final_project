@@ -228,6 +228,10 @@ class Graph
         /** Method for calculating shortest landmark path between two airports */
         vector<Vertex> landmark(Vertex start, Vertex mid, Vertex end);
 
+        void print_landmark(vector<Vertex> path);
+
+        void write_landmark(vector<Vertex> path, string outputFile);
+
         /** Adds vertex to graph structure */
         void addVertex(Vertex vertex);
 

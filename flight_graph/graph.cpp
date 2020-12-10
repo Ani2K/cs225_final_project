@@ -302,10 +302,65 @@ void Graph::testMinHeap()
 vector<Graph::Vertex> Graph::landmark(Graph::Vertex start, Graph::Vertex mid, Graph::Vertex end)
 {
     vector<Vertex> startToMid = dstra(start, mid);
-    startToMid.pop_back();
+    if(startToMid.size() < 2){
+        return startToMid; //not a viable path
+    }
+    else {
+        startToMid.pop_back();
+    }
     vector<Vertex> midToEnd = dstra(mid,end);
-    startToMid.insert(startToMid.end(), midToEnd.begin(), midToEnd.end());
-    return startToMid;
+    if(midToEnd.size() < 2){
+         return midToEnd; //not a viable path
+    }
+    else{
+        startToMid.insert(startToMid.end(), midToEnd.begin(), midToEnd.end());
+        return startToMid; //viable path
+    }
+}
+
+void Graph::print_landmark(vector<Vertex> path)
+{
+    if (path.size() < 2){
+        std::cout << "NOT A VIABLE PATH" << std::endl;
+        return;
+    }
+    
+    std::cout << "SHORTEST PATH BETWEEN ["; 
+    path[0].printName();
+    std::cout << "] AND [";
+    path[path.size() - 1].printName();
+    std::cout << "] THROUGH SELECTED MIDPOINT" << std::endl;
+    std::cout << std::endl;
+    for (Vertex v : path) {
+        v.printInfo();
+    }
+    std::cout << std::endl;
+    //std::cout << "TOTAL DISTANCE: " << path[path.size() - 1].tentDist << "km" << std::endl;
+    std::cout << "TOTAL DISTANCE: " << calcPathDistance(path) << "km" << std::endl;
+}
+
+void Graph::write_landmark(vector<Vertex> path, string outputFile)
+{
+    ofstream fileWriter;
+    fileWriter.open(outputFile);
+
+    if (path.size() < 2){
+        fileWriter << "NOT A VIABLE PATH" << std::endl;
+        return;
+    }
+
+    fileWriter << "SHORTEST PATH BETWEEN ["; 
+    path[0].writeName(fileWriter);
+    fileWriter << "] AND [";
+    path[path.size() - 1].writeName(fileWriter);
+    fileWriter << "] THROUGH SELECTED MIDPOINT" << std::endl;
+    fileWriter << std::endl;
+    for (Vertex v : path) {
+        v.writeInfo(fileWriter);
+    }
+    fileWriter << std::endl;
+    fileWriter << "TOTAL DISTANCE: " << calcPathDistance(path) << "km" << std::endl;
+    fileWriter.close();
 }
 
 void Graph::processAirportData()

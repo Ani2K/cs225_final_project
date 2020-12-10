@@ -54,7 +54,7 @@ TEST_CASE("TEST DIJKSTRA SHORTEST PATH, MANUAL SMALL GRAPH") {
     
 } 
 
-TEST_CASE("TEST DIJKSTRA SHORTEST PATH") {
+TEST_CASE("TEST DIJKSTRA SHORTEST PATH", "[part=1]") {
 	//std::cout << "BEGIN DSTRA TEST" << std::endl;
     //std::cout << std::endl;
 
@@ -64,8 +64,8 @@ TEST_CASE("TEST DIJKSTRA SHORTEST PATH") {
 
     //Graph::Vertex start = graph.getVertex(890);
     //Graph::Vertex end = graph.getVertex(891);
-    Graph::Vertex start = graph.getVertex("SFO");
-    Graph::Vertex end = graph.getVertex("Kinmen Airport");
+    Graph::Vertex start = graph.getVertex("Eindhoven Airport");
+    Graph::Vertex end = graph.getVertex("Alicante International Airport");
     vector<Graph::Vertex> path = graph.dstra(start, end);
     //std::cout << "PATH FINDING DONE" << std::endl;
 
