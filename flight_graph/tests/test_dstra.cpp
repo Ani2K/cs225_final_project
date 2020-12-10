@@ -78,3 +78,17 @@ TEST_CASE("TEST DIJKSTRA SHORTEST PATH, EASY ") {
     REQUIRE(path[1].name == "Alicante International Airport");
     REQUIRE(path.size() == 2);
 }
+
+TEST_CASE("Shortest route from Chicago to Tokyo") {
+     Graph graph = Graph("data/airports.dat", "data/routes.dat");
+     Graph::Vertex start = graph.getVertex(3830); //O'Hare Airport
+     Graph::Vertex end = graph.getVertex(2359); //Haneda airport (Tokyo)
+
+     vector<Graph::Vertex> path = graph.dstra(start, end);
+     std::cout << "Shortest route from Chicago to Tokyo" << std::endl;
+     for (unsigned i = 0; i < path.size(); i++) {
+        std::cout << path[i].name << std::endl;
+     }
+
+     REQUIRE(path[1].name == "Vancouver International Airport");
+}

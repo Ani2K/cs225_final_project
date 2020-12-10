@@ -77,3 +77,17 @@ TEST_CASE("TEST LANDMARK PATH, NOT VIABLE PATH") {
 
     REQUIRE(path.size() < 2); //not viable path printed
 }
+
+TEST_CASE("TEST SHORTEST ROUTE FROM CHICAGO TO TOKYO THROUGH WASHINGTON DC") {
+    Graph graph = Graph("data/airports.dat", "data/routes.dat");
+    Graph::Vertex start = graph.getVertex("Chicago O'Hare International Airport");
+    Graph::Vertex mid = graph.getVertex("John F Kennedy International Airport");
+    Graph::Vertex end = graph.getVertex("Tokyo Haneda International Airport");
+
+    vector<Graph::Vertex> path = graph.landmark(start, mid, end);
+    
+    std::cout << "Shortest route from Chicago to Tokyo, going through Washington D.C." << std::endl;
+    for (unsigned i = 0; i < path.size(); i++) {
+        std::cout << path[i].name << std::endl;
+    }
+}
