@@ -56,9 +56,13 @@ TEST_CASE("TEST GRAPH STRUCTURE MANUAL ENTRY") {
     graph.addEdge(Graph::Edge("AIRLINE3", "CODE3-1", 3, 
             "CODE5-2", 5, graph.calcDistance(graph.getVertex(3).lat, graph.getVertex(3).lng, 
             graph.getVertex(5).lat, graph.getVertex(5).lng), 0) );
-    
+
     bool omitUnconnected = false;
-    graph.writeGraph("output/graph_output/graph_data_manual.dat", omitUnconnected);
+    graph.writeGraph("output/graph_output/graph_data_manual1.dat", omitUnconnected);
+    
+    graph.removeVertex(4);
+
+    graph.writeGraph("output/graph_output/graph_data_manual2.dat", omitUnconnected);
 
     Graph::Vertex v1 = graph.getVertex("AIRPORT 1");
         REQUIRE(v1.name == "AIRPORT 1");
@@ -67,16 +71,16 @@ TEST_CASE("TEST GRAPH STRUCTURE MANUAL ENTRY") {
     Graph::Vertex v3 = graph.getVertex("AIRPORT 3");
         REQUIRE(v3.name == "AIRPORT 3");
     Graph::Vertex v4 = graph.getVertex("AIRPORT 4");
-        REQUIRE(v4.name == "AIRPORT 4");
+        REQUIRE(v4.name == "EMPTY");
     Graph::Vertex v5 = graph.getVertex("AIRPORT 5");
         REQUIRE(v5.name == "AIRPORT 5");
 
     Graph::Edge e1 = graph.getEdge("AIRPORT 1", "AIRPORT 4");
-        REQUIRE(e1.sourceCode_letter == "CODE1-1");
-        REQUIRE(e1.destCode_letter == "CODE4-2");
+        REQUIRE(e1.sourceCode_letter == "EMPTY");
+        REQUIRE(e1.destCode_letter == "EMPTY");
     Graph::Edge e2 = graph.getEdge("AIRPORT 2", "AIRPORT 4");
-        REQUIRE(e2.sourceCode_letter == "CODE2-1");
-        REQUIRE(e2.destCode_letter == "CODE4-2");
+        REQUIRE(e2.sourceCode_letter == "EMPTY");
+        REQUIRE(e2.destCode_letter == "EMPTY");
     Graph::Edge e3 = graph.getEdge("AIRPORT 3", "AIRPORT 5");
         REQUIRE(e3.sourceCode_letter == "CODE3-1");
         REQUIRE(e3.destCode_letter == "CODE5-2");

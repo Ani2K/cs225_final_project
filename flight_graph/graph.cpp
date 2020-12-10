@@ -517,15 +517,25 @@ void Graph::processRouteData()
     routeFileReader.close();
 }
 
-void Graph::updateData(string airportFile_, string routeFile_)
+void Graph::copy(const Graph & other)
 {
-    airportFile = airportFile_;
-    routeFile = routeFile_;
+    *this = other;
+}
+
+void Graph::clear()
+{
     graph.clear();
     airportCodeDict.clear();
     allRoutes.clear();
     validRoutes.clear();
     invalidRoutes.clear();
+}
+
+void Graph::updateData(string airportFile_, string routeFile_)
+{
+    airportFile = airportFile_;
+    routeFile = routeFile_;
+    clear();
     processAirportData();
     processRouteData();
 }
@@ -643,6 +653,34 @@ Graph::Edge Graph::getEdge(string sourceCode_, string destCode_)
 Graph::Edge Graph::getEdge(Vertex source, Vertex dest)
 {
     return getEdge(source.code, dest.code);
+}
+
+void Graph::removeVertex(int code_)
+{
+    unordered_map<int, Vertex>::iterator lookup = graph.find(code_);
+    if (lookup == graph.end()) {
+        return;
+    }
+
+    for (pair<int, Vertex> currPair : graph) {
+        if (currPair.second.code == code_) {
+            continue;
+        }
+        if (currPair.second.flightTable.find(code_) != currPair.second.flightTable.end()) {
+            removeEdge(currPair.second.flightTable.find(code_)->second);
+        }
+    }
+    graph.erase(graph.find(code_));
+}
+
+void Graph::removeVertex(string code_)
+{
+    removeVertex(convertToCode(code_));
+}
+
+void Graph::removeVertex(Vertex vertex)
+{
+    removeVertex(vertex.code);
 }
 
 void Graph::removeEdge(Edge edge)
@@ -910,19 +948,4 @@ void Graph::writeRouteData(string outputFile, bool validOnly)
         fileWriter << std::endl;
     }
     fileWriter.close();
-}
-
-void Graph::buildGraph()
-{
-
-}
-
-void Graph::copy(const Graph & other)
-{
-    *this = other;
-}
-
-void Graph::clear()
-{
-
 }

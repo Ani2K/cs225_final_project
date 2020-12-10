@@ -271,12 +271,14 @@ class Graph
          */
         Edge getEdge(Vertex source, Vertex dest);
 
-        // Need to think of good way to implement these
-        //void removeVertex(Vertex vertex);
+        /** Removes Vertex from graph structure based on airport openflights code */
+        void removeVertex(int code_);
 
-        //void removeVertex(int code_);
-
-        //void removeVertex(string code_);
+        /** Removes Vertex from graph structure based on airport name or IATA/ICAO code */
+        void removeVertex(string code_);
+        
+        /** Removes Vertex from graph structure based on Vertex object */
+        void removeVertex(Vertex vertex);
 
         /** Removes Edge from graph structure */
         void removeEdge(Edge edge);
@@ -339,8 +341,7 @@ class Graph
         */
         void processRouteData();
 
-        /** Graph construction, copy and destruction helper functions */
-        void buildGraph();
+        /** Graph copy and destruction helper functions */
         void copy(const Graph & other);
         void clear();
 
