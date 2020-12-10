@@ -78,7 +78,7 @@ TEST_CASE("TEST LANDMARK PATH, NOT VIABLE PATH") {
     REQUIRE(path.size() < 2); //not viable path printed
 }
 
-TEST_CASE("TEST SHORTEST ROUTE FROM CHICAGO TO TOKYO THROUGH WASHINGTON DC") {
+/*TEST_CASE("TEST SHORTEST ROUTE FROM CHICAGO TO TOKYO THROUGH WASHINGTON DC") {
     Graph graph = Graph("data/airports.dat", "data/routes.dat");
     Graph::Vertex start = graph.getVertex("Chicago O'Hare International Airport");
     Graph::Vertex mid = graph.getVertex("John F Kennedy International Airport");
@@ -91,3 +91,26 @@ TEST_CASE("TEST SHORTEST ROUTE FROM CHICAGO TO TOKYO THROUGH WASHINGTON DC") {
         std::cout << path[i].name << std::endl;
     }
 }
+*/
+
+TEST_CASE("TEST LANDMARK PATH, VIABLE PATH") {
+    //std::cout << "BEGIN LANDMARK TEST" << std::endl;
+    //std::cout << std::endl;
+
+    Graph graph = Graph("data/airports.dat", "data/routes.dat");
+
+    Graph::Vertex start = graph.getVertex("Chicago O'Hare International Airport");
+    Graph::Vertex mid = graph.getVertex("Ronald Reagan Washington National Airport");
+    Graph::Vertex end = graph.getVertex("Tokyo Haneda International Airport");
+    vector<Graph::Vertex> path = graph.landmark(start, mid, end);
+
+    graph.write_landmark(path, "output/landmark_output/landmark_test3.dat");
+
+    //std::cout << std::endl;
+    //std::cout << "END LANDMARK TEST" << std::endl;
+
+    REQUIRE(path[0].name == "Chicago O'Hare International Airport");
+    REQUIRE(path[path.size()-1].name == "Tokyo Haneda International Airport");
+}
+
+
