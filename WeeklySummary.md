@@ -7,7 +7,6 @@ This week, we met intially to discuss high-level goals for our project. First, w
 
 11/22 - 11/29
 -------------
-
 At our last meeting, we made some design choices regarding weights for graph edges and what information to include in vertices and edges. We decided to include name, codes, city, country, lat, and lng in vertices and for edges source and dest codes, airline code, the calculated distance between two vertices, and the number of stops. We also decided to implement vertex connection as an adjacency list that each vertex holds internally. Ani implemented the graph structure as well as different helper functions for internal and external use and did some preliminary testing of the code base so far. BFS and our two pathing algorithms remain to be implemented.
 
 11/29 - 12/05
@@ -16,3 +15,4 @@ This week, we completed two pathing algorithms. Tara did the BFS algorithm, and 
 
 12/05 - 12/11
 -------------
+This week, we finished up some final revisions to the landmark path and graph structure. We implemented Catch Testing for each of the main componenets. Ani wrote testing for the graph stucture. Tara wrote testing for dijsktra's algorithm and landmark path algorithm. Jacob implemented testing for the Breadth First Search Traversal. We fixed all bugs that came up in this testing. Additionally we created and recorded our final presentation, wrote our final report, and wrote the read me for our code. We pushed final versions of all the code and tested it on a fresh EWS machine.
