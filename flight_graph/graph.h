@@ -222,7 +222,9 @@ class Graph
         /** Test Vertex minheap */
         //void testMinHeap();
 
-        /** Method for calculating shortest landmark path between two airports */
+        /** Method for calculating shortest landmark path between two airports
+         * Used https://www.coursera.org/lecture/cs-fundamentals-3/4-3-4-graphs-landmark-path-problem-uQmGv as reference.
+         */
         vector<Vertex> landmark(Vertex start, Vertex mid, Vertex end);
 
         void print_landmark(vector<Vertex> path);
