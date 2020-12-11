@@ -9,7 +9,7 @@ Running
 Functionality
 
   -Can construct a empty graph structure using Graph() or processed graph structure using Graph("data/airports.dat", "data/routes.dat")  
-  -There are get, add, and remove methods for vertices and edges using a variety of inputs (see graph.h  
+  -There are get, add, and remove methods for vertices and edges using a variety of inputs (see graph.h)  
   -Can run a breadth first search traversal given a starting node using bfs(Vertex start). This will traverse all nodes in that connected portion of the graph.  
   -Can find the shortest path between two airports using dstra(Vertex start, Vertex end) 
   -Can find the shortest path between two airports through a third midpoint air
