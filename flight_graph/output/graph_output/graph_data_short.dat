@@ -1,0 +1,205 @@
+
+------------AIRPORT ENTRY------------
+
+CODE [10]
+NAME [Thule Air Base]
+CITY [Thule]
+CITY2 [EMPTY]
+COUNTRY [Greenland]
+IATA CODE [THU]
+ICAO CODE [BGTL]
+LAT [76.5312]
+LNG [-68.7032]
+
+----------FLIGHTS----------
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [9]
+NAME [Kangerlussuaq Airport]
+CITY [Sondrestrom]
+CITY2 [EMPTY]
+COUNTRY [Greenland]
+IATA CODE [SFJ]
+ICAO CODE [BGSF]
+LAT [67.0122]
+LNG [-50.7116]
+
+----------FLIGHTS----------
+AIRLINE [GL] - SOURCE CODE [9] - DEST CODE [8] - DIST [316.832] - DIRECT
+AIRLINE [GL] - SOURCE CODE [9] - DEST CODE [7] - DIST [698.952] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [8]
+NAME [Godthaab / Nuuk Airport]
+CITY [Godthaab]
+CITY2 [EMPTY]
+COUNTRY [Greenland]
+IATA CODE [GOH]
+ICAO CODE [BGGH]
+LAT [64.1909]
+LNG [-51.6781]
+
+----------FLIGHTS----------
+AIRLINE [GL] - SOURCE CODE [8] - DEST CODE [9] - DIST [316.832] - DIRECT
+AIRLINE [GL] - SOURCE CODE [8] - DEST CODE [7] - DIST [463.692] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [7]
+NAME [Narsarsuaq Airport]
+CITY [Narssarssuaq]
+CITY2 [EMPTY]
+COUNTRY [Greenland]
+IATA CODE [UAK]
+ICAO CODE [BGBW]
+LAT [61.1605]
+LNG [-45.426]
+
+----------FLIGHTS----------
+AIRLINE [GL] - SOURCE CODE [7] - DEST CODE [8] - DIST [463.692] - DIRECT
+AIRLINE [GL] - SOURCE CODE [7] - DEST CODE [9] - DIST [698.952] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [6]
+NAME [Wewak International Airport]
+CITY [Wewak]
+CITY2 [EMPTY]
+COUNTRY [Papua New Guinea]
+IATA CODE [WWK]
+ICAO CODE [AYWK]
+LAT [-3.58383]
+LNG [143.669]
+
+----------FLIGHTS----------
+AIRLINE [CG] - SOURCE CODE [6] - DEST CODE [3] - DIST [258.903] - DIRECT
+AIRLINE [CG] - SOURCE CODE [6] - DEST CODE [2] - DIST [296.343] - DIRECT
+AIRLINE [PX] - SOURCE CODE [6] - DEST CODE [5] - DIST [760.449] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [5]
+NAME [Port Moresby Jacksons International Airport]
+CITY [Port Moresby]
+CITY2 [EMPTY]
+COUNTRY [Papua New Guinea]
+IATA CODE [POM]
+ICAO CODE [AYPY]
+LAT [-9.44338]
+LNG [147.22]
+
+----------FLIGHTS----------
+AIRLINE [CG] - SOURCE CODE [5] - DEST CODE [4] - DIST [324.124] - DIRECT
+AIRLINE [CG] - SOURCE CODE [5] - DEST CODE [1] - DIST [424.593] - DIRECT
+AIRLINE [PX] - SOURCE CODE [5] - DEST CODE [2] - DIST [496.778] - DIRECT
+AIRLINE [CG] - SOURCE CODE [5] - DEST CODE [3] - DIST [515.297] - DIRECT
+AIRLINE [PX] - SOURCE CODE [5] - DEST CODE [6] - DIST [760.449] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [4]
+NAME [Nadzab Airport]
+CITY [Nadzab]
+CITY2 [EMPTY]
+COUNTRY [Papua New Guinea]
+IATA CODE [LAE]
+ICAO CODE [AYNZ]
+LAT [-6.5698]
+LNG [146.726]
+
+----------FLIGHTS----------
+AIRLINE [CG] - SOURCE CODE [4] - DEST CODE [1] - DIST [157.102] - DIRECT
+AIRLINE [CG] - SOURCE CODE [4] - DEST CODE [2] - DIST [183.578] - DIRECT
+AIRLINE [CG] - SOURCE CODE [4] - DEST CODE [3] - DIST [281.037] - DIRECT
+AIRLINE [CG] - SOURCE CODE [4] - DEST CODE [5] - DIST [324.124] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [3]
+NAME [Mount Hagen Kagamuga Airport]
+CITY [Mount Hagen]
+CITY2 [EMPTY]
+COUNTRY [Papua New Guinea]
+IATA CODE [HGU]
+ICAO CODE [AYMH]
+LAT [-5.82679]
+LNG [144.296]
+
+----------FLIGHTS----------
+AIRLINE [CG] - SOURCE CODE [3] - DEST CODE [1] - DIST [124.481] - DIRECT
+AIRLINE [CG] - SOURCE CODE [3] - DEST CODE [2] - DIST [179.036] - DIRECT
+AIRLINE [CG] - SOURCE CODE [3] - DEST CODE [6] - DIST [258.903] - DIRECT
+AIRLINE [CG] - SOURCE CODE [3] - DEST CODE [4] - DIST [281.037] - DIRECT
+AIRLINE [CG] - SOURCE CODE [3] - DEST CODE [5] - DIST [515.297] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [2]
+NAME [Madang Airport]
+CITY [Madang]
+CITY2 [EMPTY]
+COUNTRY [Papua New Guinea]
+IATA CODE [MAG]
+ICAO CODE [AYMD]
+LAT [-5.20708]
+LNG [145.789]
+
+----------FLIGHTS----------
+AIRLINE [CG] - SOURCE CODE [2] - DEST CODE [1] - DIST [106.714] - DIRECT
+AIRLINE [CG] - SOURCE CODE [2] - DEST CODE [3] - DIST [179.036] - DIRECT
+AIRLINE [CG] - SOURCE CODE [2] - DEST CODE [4] - DIST [183.578] - DIRECT
+AIRLINE [CG] - SOURCE CODE [2] - DEST CODE [6] - DIST [296.343] - DIRECT
+AIRLINE [PX] - SOURCE CODE [2] - DEST CODE [5] - DIST [496.778] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+
+------------AIRPORT ENTRY------------
+
+CODE [1]
+NAME [Goroka Airport]
+CITY [Goroka]
+CITY2 [EMPTY]
+COUNTRY [Papua New Guinea]
+IATA CODE [GKA]
+ICAO CODE [AYGA]
+LAT [-6.08169]
+LNG [145.392]
+
+----------FLIGHTS----------
+AIRLINE [CG] - SOURCE CODE [1] - DEST CODE [2] - DIST [106.714] - DIRECT
+AIRLINE [CG] - SOURCE CODE [1] - DEST CODE [3] - DIST [124.481] - DIRECT
+AIRLINE [CG] - SOURCE CODE [1] - DEST CODE [4] - DIST [157.102] - DIRECT
+AIRLINE [CG] - SOURCE CODE [1] - DEST CODE [5] - DIST [424.593] - DIRECT
+
+----------END AIRPORT ENTRY----------
+
+AIRPORT COUNT [10] - NO OUTGOING AIRPORT COUNT [1]
+TOTAL FLIGHTS [32]
+LARGEST AIRPORT [Port Moresby Jacksons International Airport]
